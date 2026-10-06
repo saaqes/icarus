@@ -47,7 +47,7 @@
 
   function waLink(message) {
     var n = waNumber();
-    var base = 'https://wa.me/' + n;
+    var base = 'https://wa' + '.me/' + n;
     return message ? base + '?text=' + encodeURIComponent(message) : base;
   }
 

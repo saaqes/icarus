@@ -239,7 +239,7 @@
       I.openWhatsApp(msg);
     });
     // Los enlaces con data-wa tienen un href real como respaldo sin JS
-    document.querySelectorAll('a[data-wa]').forEach(function (a: HTMLAnchorElement) { a.href = I.waLink(I.msg.general()); });
+    document.querySelectorAll('a[data-wa]').forEach(function (a: HTMLAnchorElement) { a.setAttribute('href', '#'); });
   }
 
   /* ---------- Toast ---------- */

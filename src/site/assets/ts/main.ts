@@ -6,7 +6,10 @@ export {};
        - demo: true → se marca como Demo / simulación.
        - accent: color RGB de la tarjeta.
        ========================================================= */
-    const CONTACT_EMAIL = "contacto@icarus.app";
+    const CONTACT_EMAIL = "icaruswebservice@gmail.com";
+    // WhatsApp: se arma al hacer clic (no queda como enlace visible en el HTML)
+    const WA_PARTS = ["57", "316", "621", "9962"];
+    const openWhatsApp = (msg: string) => { window.open("https://wa" + ".me/" + WA_PARTS.join("") + "?text=" + encodeURIComponent(msg), "_blank", "noopener,noreferrer"); };
 
     const ICONS = {
       helmet: '<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 20c3-10 27-10 30 0"/><path d="M24 12v6M32 10v6M40 12v6"/><path d="M16 40V30c0-8 6-13 16-13s16 5 16 13v10"/><path d="M24 33h6v5h-6zM34 33h6v5h-6z"/><path d="M32 33v14"/><path d="m16 40 2 11 6 4h4l-2-9M48 40l-2 11-6 4h-4l2-9"/></svg>',
@@ -122,7 +125,7 @@ export {};
           <p class="tool__cat">${t.category}</p>
         </div>
         <div class="tool__shot"${isDev ? ` role="img" aria-label="Vista previa de ${t.name} (en desarrollo)"` : ` role="button" tabindex="0" data-view="${t.id}" aria-label="Probar la vista previa de ${t.name}"`}>
-          <div class="shot__bar" aria-hidden="true"><i></i><i></i><i></i><span>icarus.app/${t.id}</span></div>
+          <div class="shot__bar" aria-hidden="true"><i></i><i></i><i></i><span>icarus.marketing/${t.id}</span></div>
           <div class="shot__view">${sceneHTML(t, dev)}</div>
           ${isDev ? '<div class="shot__dev"><span>En desarrollo</span></div>' : `<div class="shot__cta" aria-hidden="true"><span>Probar ${arrow}</span></div><span class="shot__tag">En vivo</span>`}
         </div>
@@ -280,7 +283,7 @@ export {};
       $("#modalActions").innerHTML = (toolLive(tool)
         ? `<button type="button" class="btn btn--primary" data-try="${tool.id}">Probar ahora ${arrow}</button>`
         : "")
-        + `<a class="btn btn--ghost" href="#contacto" data-close>Contactar</a><button class="btn btn--ghost" data-close>Cerrar</button>`;
+        + `<button type="button" class="btn btn--ghost" data-wa="${tool.name}">Contactar</button><button class="btn btn--ghost" data-close>Cerrar</button>`;
       modal.hidden = false;
       requestAnimationFrame(() => modal.classList.add("is-open"));
       document.body.style.overflow = "hidden";
@@ -356,6 +359,8 @@ export {};
       if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openViewer(s.dataset.view); }
     });
     modal.addEventListener("click", e => {
+      const wa = e.target.closest("[data-wa]");
+      if (wa) { e.preventDefault(); return openWhatsApp(`Hola, quiero más información sobre ${wa.dataset.wa} de ICARUS.`); }
       const tr = e.target.closest("[data-try]");
       if (tr) { const id = tr.dataset.try; closeModal(); return setTimeout(() => openViewer(id), 60); }
       if (e.target === modal || e.target.closest("[data-close]") || e.target.closest("#modalClose")) closeModal();
@@ -766,8 +771,6 @@ export {};
       box.classList.add("is-gate"); gate.hidden = false;
       btn.href = FORGE_REDIRECT_URL;
       if (FORGE_REDIRECT_NEW_TAB) { btn.target = "_blank"; btn.rel = "noopener"; }
-      let host = FORGE_REDIRECT_URL; try { const u = new URL(FORGE_REDIRECT_URL, location.href); host = u.host + u.pathname; } catch (e) { /* usar texto tal cual */ }
-      $("#fgGateUrl").textContent = "Te llevaremos a " + host;
       $("#forgeSubTxt").textContent = "Diseña tu landing page o tu sitio completo en nuestra página dedicada y recibe tu cotización.";
       // vista previa animada de demostración (no guarda nada)
       F = fDefault(); F.name = "Tu marca"; F.tagline = "Tu idea, hecha página web";
