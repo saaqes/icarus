@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ICARUS — Forja tus ideas, alcanza el Olimpo</title>
+  <meta name="description" content="ICARUS reúne herramientas digitales para marketing, contenido, ventas, finanzas y negocios en un solo lugar. Crea, analiza, vende y haz crecer tus proyectos." />
+  <meta name="theme-color" content="#080605" />
+  <meta property="og:title" content="ICARUS — Lleva tus ideas más lejos" />
+  <meta property="og:description" content="Herramientas digitales para creadores, marketers y emprendedores, en un solo lugar." />
+  <meta property="og:type" content="website" />
+  <link rel="icon" type="image/png" href="assets/img/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cardo:ital,wght@0,400;0,700;1,400&family=Cinzel:wght@400;600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="assets/css/main.css" />
+</head>
+<body>
+  <div class="splash" id="splash" role="status" aria-live="polite" aria-label="Cargando ICARUS">
+    <img src="assets/img/icarus-logo.webp" alt="ICARUS" width="1100" height="858" />
+    <p class="splash__txt">Se requiere discreción</p>
+    <span class="splash__hint" aria-hidden="true">Toca para entrar</span>
+  </div>
+  <noscript><style>.splash{display:none!important}</style></noscript>
+  <a href="#main" class="skip-link">Saltar al contenido</a>
+
+  <!-- Sprite SVG: columna dórica y degradados -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <defs>
+      <linearGradient id="g-stone" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#76604a"/><stop offset="1" stop-color="#2c2119"/></linearGradient>
+      <linearGradient id="g-shaft" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#17110d"/><stop offset=".3" stop-color="#7a6049"/><stop offset=".55" stop-color="#4c3a2d"/><stop offset="1" stop-color="#120d0a"/></linearGradient>
+      <linearGradient id="g-step" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2f241b"/><stop offset="1" stop-color="#100b08"/></linearGradient>
+      <linearGradient id="g-leaf" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f3dca0"/><stop offset="1" stop-color="#9c7436"/></linearGradient>
+      <pattern id="p-flutes" width="9" height="10" patternUnits="userSpaceOnUse"><rect width="1.6" height="10" fill="rgba(0,0,0,.5)"/><rect x="1.6" width=".8" height="10" fill="rgba(255,235,200,.08)"/></pattern>
+      <linearGradient id="g-ped" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a2d23"/><stop offset="1" stop-color="#1b130f"/></linearGradient>
+      <radialGradient id="g-sun" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#ffe9b8"/><stop offset=".55" stop-color="#e8a24a"/><stop offset="1" stop-color="#b3201f"/></radialGradient>
+      <symbol id="col" viewBox="0 0 120 600">
+        <rect x="6" y="0" width="108" height="18" fill="url(#g-stone)" stroke="rgba(232,201,134,.3)"/>
+        <path d="M22 18H98Q114 32 92 48H28Q6 32 22 18Z" fill="url(#g-stone)" stroke="rgba(232,201,134,.22)"/>
+        <rect x="28" y="48" width="64" height="6" fill="url(#g-stone)"/>
+        <path d="M32 54H88L85 540H35Z" fill="url(#g-shaft)"/>
+        <path d="M32 54H88L85 540H35Z" fill="url(#p-flutes)"/>
+        <rect x="10" y="540" width="100" height="12" fill="url(#g-stone)" stroke="rgba(232,201,134,.25)"/>
+        <rect x="0" y="552" width="120" height="48" fill="url(#g-step)" stroke="rgba(232,201,134,.2)"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <!-- Fondo vivo -->
+  <div class="world" aria-hidden="true">
+    <div class="world__fog"></div>
+    <div class="world__fog world__fog--2"></div>
+    <div class="world__vignette"></div>
+    <div class="world__grain"></div>
+  </div>
+  <canvas id="embers" aria-hidden="true"></canvas>
+
+  <!-- NAV -->
+  <header class="nav" id="nav">
+    <div class="container nav__inner">
+      <a href="#inicio" class="brand" aria-label="ICARUS, ir al inicio"><img src="assets/img/icarus-wordmark.webp" alt="ICARUS" width="520" height="149" /></a>
+      <nav aria-label="Navegación principal">
+        <ul class="nav__links">
+          <li><a href="#inicio" data-link>Inicio</a></li>
+          <li><a href="#herramientas" data-link>Herramientas</a></li>
+          <li><a href="#forja" data-link>Tu web</a></li>
+          <li><a href="#sobre" data-link>Sobre ICARUS</a></li>
+          <li><a href="#contacto" data-link>Contacto</a></li>
+        </ul>
+      </nav>
+      <div class="nav__actions">
+        <a href="#herramientas" class="btn btn--primary btn--sm">Explorar <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <button class="nav__toggle" id="navToggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobileMenu"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+    <div class="nav__meander" aria-hidden="true"></div>
+  </header>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <div class="meander meander--flat" aria-hidden="true"></div>
+    <ul>
+      <li><a href="#inicio">Inicio</a></li>
+      <li><a href="#herramientas">Herramientas</a></li>
+      <li><a href="#forja">Tu página web</a></li>
+      <li><a href="#sobre">Sobre ICARUS</a></li>
+      <li><a href="#contacto">Contacto</a></li>
+    </ul>
+    <a href="#herramientas" class="btn btn--primary">Explorar herramientas</a>
+  </div>
+
+  <main id="main">
+    <!-- HERO -->
+    <section class="hero" id="inicio" aria-labelledby="hero-title">
+      <div class="hero__stage" aria-hidden="true">
+        <div class="hero__glow"></div>
+        <div class="hero__sun" data-depth="6"></div>
+        <div class="hero__ring hero__ring--1"></div>
+        <div class="hero__ring hero__ring--2"></div>
+        <svg class="pillar pillar--l2" viewBox="0 0 120 600" data-depth="-10"><use href="#col" width="120" height="600"/></svg>
+        <svg class="pillar pillar--r2" viewBox="0 0 120 600" data-depth="-10"><use href="#col" width="120" height="600"/></svg>
+        <svg class="pillar pillar--l" viewBox="0 0 120 600" data-depth="-18"><use href="#col" width="120" height="600"/></svg>
+        <svg class="pillar pillar--r" viewBox="0 0 120 600" data-depth="-18"><use href="#col" width="120" height="600"/></svg>
+      </div>
+
+      <div class="container hero__inner intro">
+        <p class="eyebrow"><span lang="el">ΙΚΑΡΟΣ</span> <b>Herramientas digitales</b></p>
+        <h1 class="hero__logo" id="hero-title"><img src="assets/img/icarus-logo.webp" alt="ICARUS" width="1100" height="858" fetchpriority="high" /></h1>
+        <p class="hero__title">Forja tus ideas. <em>Alcanza el Olimpo.</em></p>
+        <p class="hero__lead">ICARUS reúne en un solo lugar las herramientas para marketing, contenido, ventas, finanzas y negocios. Menos pestañas, más poder para crear, analizar y hacer crecer tu proyecto.</p>
+        <div class="hero__cta">
+          <a href="#herramientas" class="btn btn--primary">Explorar herramientas <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          <a href="#sobre" class="btn btn--ghost">Conocer ICARUS</a>
+        </div>
+        <p class="vow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Anónimo por diseño · sin registro · sin rastreo</p>
+        <ul class="hero__chips" aria-label="Áreas que cubre ICARUS">
+          <li>Marketing</li><li>Publicidad</li><li>Contenido</li><li>Ventas</li><li>Automatización</li><li>Análisis</li><li>Finanzas</li>
+        </ul>
+      </div>
+      <a href="#herramientas" class="scroll-hint" aria-label="Bajar a herramientas"></a>
+    </section>
+
+    <div class="meander" aria-hidden="true"></div>
+
+    <!-- HERRAMIENTAS -->
+    <section class="section" id="herramientas" aria-labelledby="tools-title">
+      <span class="watermark" aria-hidden="true" lang="el">ΟΠΛΑ</span>
+      <div class="container" style="position:relative">
+        <header class="section__head reveal">
+          <span class="kicker"><span lang="el">Α΄</span>&nbsp;· Las armas</span>
+          <h2 class="section__title" id="tools-title">Explora las herramientas</h2>
+          <p class="section__sub">Todo lo que necesitas para llevar tus proyectos más lejos.</p>
+          <div class="orn" aria-hidden="true"><i></i></div>
+        </header>
+        <div class="tools" id="toolsGrid"></div>
+        <p class="tools__note reveal"><strong>Todas son simulaciones.</strong> Ninguna herramienta de esta página usa el mercado real, se conecta a cuentas reales ni opera dinero real: todo es ficticio y con fines educativos. No son las aplicaciones originales. <strong>Todo es anónimo:</strong> no pedimos cuenta ni datos personales, y las demos corren en tu navegador sin enviar nada. Nunca escribas datos bancarios reales en una demo. ICARUS es un proyecto independiente y no está afiliado, patrocinado ni avalado por Deriv, Nequi, Binance ni Daviplata. Las marcas mencionadas pertenecen a sus respectivos dueños.</p>
+      </div>
+    </section>
+
+    <!-- LA FORJA: CONFIGURADOR DE PÁGINAS WEB -->
+    <section class="section" id="forja" aria-labelledby="forge-title">
+      <span class="watermark" aria-hidden="true" lang="el">ΤΕΧΝΗ</span>
+      <div class="container" style="position:relative">
+        <header class="section__head reveal">
+          <span class="kicker"><span lang="el">Β΄</span>&nbsp;· La forja</span>
+          <h2 class="section__title" id="forge-title">Forja tu página web</h2>
+          <p class="section__sub"><span id="forgeSubTxt">Arma tu landing page o tu sitio a tu medida, míralo construirse al instante y recibe tu cotización.</span></p>
+          <div class="orn" aria-hidden="true"><i></i></div>
+        </header>
+
+        <div class="forge" id="forge">
+          <div class="fg-gate tablet" id="fgGate" hidden>
+            <span class="kicker">Tu web, a tu medida</span>
+            <h3>Diseña tu web en la forja</h3>
+            <p>Elige el tipo de proyecto y el hosting, cuéntanos tu idea y te la construimos. Lo haces en nuestra página dedicada.</p>
+            <ol class="fg-gsteps">
+              <li><span>Elige el tipo de proyecto y tu hosting</span></li>
+              <li><span>Cuéntanos tu idea y tus secciones</span></li>
+              <li><span>Recibe tu página lista para publicar</span></li>
+            </ol>
+            <a class="btn btn--primary" id="fgGateBtn" href="#">Ir a la forja <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
+            <p class="vow vow--plain"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><span><b>Anónimo.</b> No necesitas cuenta: usa un alias y comparte solo lo que quieras. ICARUS no rastrea tu visita.</span></p>
+            <p class="fg-fine" id="fgGateUrl"></p>
+          </div>
+          <div class="fg-work tablet" id="fgWork">
+            <nav class="fg-steps" id="fgSteps" aria-label="Pasos del configurador"></nav>
+            <div class="fg-panel" id="fgPanel"></div>
+          </div>
+
+          <aside class="fg-side" aria-label="Vista previa y cotización">
+            <div class="browser">
+              <div class="browser__bar"><i></i><i></i><i></i><span class="browser__url" id="pvUrl">www.tunegocio.com</span></div>
+              <div class="browser__view" id="pvView" role="img" aria-label="Vista previa de tu página"></div>
+            </div>
+            <div class="fg-quote tablet" id="fgQuote">
+              <p class="fg-qk">Cotización estimada</p>
+              <p class="fg-total" id="fgTotal">$0</p>
+              <p class="fg-meta" id="fgMeta"></p>
+              <details class="fg-break" id="fgBreak"><summary>Ver desglose</summary><ul class="fg-lines" id="fgLines"></ul></details>
+              <p class="fg-fine">Valores estimados en pesos colombianos (COP). El precio final se confirma al revisar tu pedido. Tu diseño solo vive en tu navegador hasta que tú lo envíes.</p>
+              <button type="button" class="btn btn--primary" id="fgGoSend">Enviar mi pedido</button>
+            </div>
+          </aside>
+
+          <div class="fg-bar" id="fgBar"><div><span>Total estimado</span><b id="fgBarTotal">$0</b></div><a href="#fgQuote" class="btn btn--primary btn--sm">Ver cotización</a></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SOBRE ICARUS: EL TEMPLO -->
+    <section class="section" id="sobre" aria-labelledby="about-title">
+      <span class="watermark" aria-hidden="true" lang="el">ΝΑΟΣ</span>
+      <div class="container" style="position:relative">
+        <header class="section__head reveal" style="margin-bottom:0">
+          <span class="kicker"><span lang="el">Γ΄</span>&nbsp;· El templo</span>
+          <h2 class="section__title" id="about-title">Más que herramientas.</h2>
+          <p class="section__sub">Un espacio para crear, analizar y crecer.</p>
+          <div class="orn" aria-hidden="true"><i></i></div>
+        </header>
+        <p class="lead reveal"><strong>ICARUS nace para reunir lo que normalmente vive disperso.</strong> Utilidades digitales útiles, en una experiencia limpia, rápida y pensada para quien construye algo propio. Cuatro pilares sostienen el templo:</p>
+
+        <div class="temple reveal">
+          <svg class="temple__pediment" viewBox="0 0 1000 176" role="img" aria-label="Frontón del templo de ICARUS" id="pediment">
+            <polygon points="0,176 500,4 1000,176" fill="url(#g-ped)" stroke="rgba(232,201,134,.55)" stroke-width="1.5"/>
+            <polygon points="64,166 500,30 936,166" fill="#0e0907" stroke="rgba(232,201,134,.3)" stroke-width="1"/>
+            <g id="pedRays" transform="translate(500 150)"></g>
+            <circle cx="500" cy="150" r="24" fill="url(#g-sun)"/>
+            <circle cx="500" cy="150" r="30" fill="none" stroke="rgba(232,201,134,.55)"/>
+            <text x="500" y="72" text-anchor="middle" fill="rgba(232,201,134,.85)" font-family="Cardo, serif" font-size="21" letter-spacing="9" lang="el">ΙΚΑΡΟΣ</text>
+            <g fill="#e8c986" opacity=".75"><path d="M0 176 L22 176 L11 150Z"/><path d="M1000 176 L978 176 L989 150Z"/></g>
+          </svg>
+          <div class="temple__arch"></div>
+          <div class="temple__frieze" aria-hidden="true"></div>
+          <ul class="temple__cols">
+            <li class="pc reveal" style="--d:.05s"><div class="pc__abacus"></div><div class="pc__echinus"></div>
+              <div class="pc__shaft"><span class="pc__ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="m12 3 2.4 6.2L21 12l-6.6 2.8L12 21l-2.4-6.2L3 12l6.6-2.8z"/></svg></span><h3>Creadores</h3><p>Contenido que llega más lejos</p><span class="pc__num" lang="el">Α΄</span></div>
+              <div class="pc__base"></div></li>
+            <li class="pc reveal" style="--d:.12s"><div class="pc__abacus"></div><div class="pc__echinus"></div>
+              <div class="pc__shaft"><span class="pc__ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M12 2c3.2 3 4.4 6.4 4.4 10.4l-4.4 4.2-4.4-4.2C7.6 8.4 8.8 5 12 2Z"/><circle cx="12" cy="9.5" r="1.6"/><path d="M7.6 14 4 18l4-.8M16.4 14 20 18l-4-.8M12 16.6V22"/></svg></span><h3>Emprendedores</h3><p>De la idea al primer cliente</p><span class="pc__num" lang="el">Β΄</span></div>
+              <div class="pc__base"></div></li>
+            <li class="pc reveal" style="--d:.19s"><div class="pc__abacus"></div><div class="pc__echinus"></div>
+              <div class="pc__shaft"><span class="pc__ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"><path d="M3 11v2a1 1 0 0 0 1 1h2l5 4V6L6 10H4a1 1 0 0 0-1 1Z"/><path d="M16 9a4 4 0 0 1 0 6M19 6a8 8 0 0 1 0 12"/></svg></span><h3>Marketers</h3><p>Campañas medibles y enfocadas</p><span class="pc__num" lang="el">Γ΄</span></div>
+              <div class="pc__base"></div></li>
+            <li class="pc reveal" style="--d:.26s"><div class="pc__abacus"></div><div class="pc__echinus"></div>
+              <div class="pc__shaft"><span class="pc__ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="1"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13h18"/></svg></span><h3>Negocios y proyectos</h3><p>Operación, ventas y análisis</p><span class="pc__num" lang="el">Δ΄</span></div>
+              <div class="pc__base"></div></li>
+          </ul>
+          <div class="temple__steps" aria-hidden="true"><i></i><i></i><i></i></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BENEFICIOS -->
+    <section class="section" id="beneficios" aria-labelledby="benefits-title" style="padding-top:0">
+      <div class="container">
+        <header class="section__head reveal">
+          <span class="kicker"><span lang="el">Δ΄</span>&nbsp;· Las pruebas</span>
+          <h2 class="section__title" id="benefits-title">Diseñado para despegar.</h2>
+          <div class="orn" aria-hidden="true"><i></i></div>
+        </header>
+        <div class="benefits">
+          <article class="benefit tablet reveal" style="--d:0s; --accent:209,31,43">
+            <div class="benefit__num"><b>01</b></div>
+            <svg class="benefit__ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M3 9 12 4l9 5H3Z"/><path d="M5 9v9M9.5 9v9M14.5 9v9M19 9v9M3 20h18"/></svg>
+            <h3>Todo en un solo lugar</h3>
+            <p>Deja de saltar entre pestañas. Tus herramientas clave, reunidas bajo un mismo techo.</p>
+          </article>
+          <article class="benefit tablet reveal" style="--d:.1s; --accent:209,31,43">
+            <div class="benefit__num"><b>02</b></div>
+            <svg class="benefit__ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r=".8" fill="currentColor"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
+            <h3>Enfocadas en resultados</h3>
+            <p>Cada herramienta resuelve algo concreto: vender, medir, publicar o decidir mejor.</p>
+          </article>
+          <article class="benefit tablet reveal" style="--d:.2s; --accent:209,31,43">
+            <div class="benefit__num"><b>03</b></div>
+            <svg class="benefit__ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg>
+            <h3>Experiencia rápida y sencilla</h3>
+            <p>Interfaces claras que cargan rápido y se entienden al primer vistazo, en cualquier dispositivo.</p>
+          </article>
+          <article class="benefit tablet reveal" style="--d:.3s; --accent:209,31,43">
+            <div class="benefit__num"><b>04</b></div>
+            <svg class="benefit__ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M3 18 2 7l5 4 5-7 5 7 5-4-1 11z"/><path d="M3 21h18"/></svg>
+            <h3>Pensado para creadores y emprendedores</h3>
+            <p>Hecho para quien construye algo propio y quiere crecer sin depender de mil plataformas.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- JURAMENTO: ANONIMATO -->
+    <section class="section" id="juramento" aria-labelledby="pledge-title" style="padding-top:0">
+      <div class="container">
+        <div class="pledge tablet reveal">
+          <header class="pledge__head">
+            <span class="kicker"><span lang="el">Γ΄</span>&nbsp;· El juramento</span>
+            <h2 class="section__title" id="pledge-title">Anónimo por diseño.</h2>
+            <p class="section__sub">Lo que haces en ICARUS es tuyo. Esto es lo que prometemos.</p>
+            <div class="orn" aria-hidden="true"><i></i></div>
+          </header>
+          <ul class="pledge__grid" style="list-style:none;padding:0;margin:0">
+          <li class="pledge__item"><span class="pledge__ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4.5 4-6 8-6s7 1.5 8 6"/><path d="M3 3l18 18"/></svg></span><h3>Sin registro ni cuentas</h3><p>Entras, pruebas y te vas. Nunca te pedimos usuario, contraseña ni datos para usar las demos.</p></li>
+          <li class="pledge__item"><span class="pledge__ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/><path d="M3 3l18 18"/></svg></span><h3>Sin rastreo</h3><p>No usamos cookies de seguimiento ni analíticas. No armamos perfiles sobre ti.</p></li>
+          <li class="pledge__item"><span class="pledge__ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2.5" width="12" height="19" rx="2"/><path d="M10.5 18.5h3"/><path d="m9 10 2 2 4-4"/></svg></span><h3>Tus datos se quedan contigo</h3><p>Las demos corren en tu navegador y tu borrador de página se guarda solo en tu dispositivo.</p></li>
+          <li class="pledge__item"><span class="pledge__ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5-7 10-7 10Z" opacity="0"/><path d="M8 12V6.5a1.5 1.5 0 0 1 3 0V11m0-1V4.5a1.5 1.5 0 0 1 3 0V11m0-4.5a1.5 1.5 0 0 1 3 0V14c0 4-2 7-6 7-3 0-4.5-1.5-6-4l-2-3.5a1.5 1.5 0 0 1 2.5-1.5L8 14"/></svg></span><h3>Tú decides qué compartes</h3><p>Si nos escribes, solo vemos lo que incluyas. Puedes usar un alias y un medio de contacto de tu elección.</p></li>
+          </ul>
+          <p class="pledge__fine"><strong>Transparencia:</strong> ICARUS no usa cuentas, cookies de seguimiento ni analíticas. Las tipografías se cargan desde Google Fonts, como en la mayoría de sitios. Si decides escribirnos, usamos tus datos únicamente para responderte.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="section" aria-labelledby="cta-title" style="padding-top:0">
+      <div class="container">
+        <div class="cta reveal">
+          <div class="cta__rays" aria-hidden="true"></div>
+          <div class="meander meander--red meander--top" aria-hidden="true"></div>
+          <svg class="laurel laurel--l" viewBox="0 0 170 290" aria-hidden="true" data-laurel></svg>
+          <svg class="laurel laurel--r" viewBox="0 0 170 290" aria-hidden="true" data-laurel></svg>
+          <div class="cta__body">
+            <h2 id="cta-title">¿Listo para llevar tus ideas más lejos?</h2>
+            <p>Explora las herramientas de ICARUS o escríbenos para contarnos qué quieres construir. La gloria empieza con un primer paso.</p>
+            <div class="cta__actions">
+              <a href="#herramientas" class="btn btn--light">Explorar herramientas <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+              <a href="#contacto" class="btn btn--ghost">Contactar</a>
+            </div>
+          </div>
+          <div class="meander meander--red meander--bot" aria-hidden="true"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACTO -->
+    <section class="section" id="contacto" aria-labelledby="contact-title" style="padding-top:0">
+      <div class="container contact">
+        <div class="contact__info">
+          <span class="kicker reveal"><span lang="el">Ε΄</span>&nbsp;· El mensajero</span>
+          <h2 class="section__title reveal" id="contact-title">Hablemos de tu proyecto.</h2>
+          <p class="reveal" style="--d:.1s">¿Tienes una idea, una pregunta o quieres proponer una herramienta? Déjanos tu mensaje y te respondemos lo antes posible.</p>
+          <ul class="contact__list reveal" style="--d:.15s">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="1"/><path d="m3 7 9 6 9-6"/></svg><span id="contactEmailText">contacto@icarus.app</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6.5-7-11a7 7 0 0 1 14 0c0 4.5-7 11-7 11Z"/></svg>Colombia · Remoto</li>
+          </ul>
+        </div>
+
+        <form class="form tablet reveal" id="contactForm" style="--d:.1s" novalidate>
+          <div class="form__row">
+            <div class="field"><label for="name">Nombre o alias <small style="color:var(--mute)">(opcional)</small></label><input id="name" name="name" type="text" autocomplete="off" placeholder="Como quieras que te llamemos" /></div>
+            <div class="field"><label for="email">Correo</label><input id="email" name="email" type="email" autocomplete="email" required placeholder="tu@correo.com" /></div>
+          </div>
+          <div class="field"><label for="topic">Tema</label>
+            <select id="topic" name="topic"><option>Quiero usar ICARUS</option><option>Propuesta de herramienta</option><option>Alianza o colaboración</option><option>Otro</option></select></div>
+          <div class="field"><label for="message">Mensaje</label><textarea id="message" name="message" required placeholder="Cuéntanos en qué estás trabajando…"></textarea></div>
+          <button type="submit" class="btn btn--primary">Enviar mensaje <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+          <p class="vow vow--plain"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><span><b>Anónimo.</b> Solo usamos tu correo para responderte. Nada de listas ni seguimiento.</span></p>
+          <p class="form__status" id="formStatus" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="meander" aria-hidden="true"></div>
+    <div class="container">
+      <div class="footer__top">
+        <div>
+          <a href="#inicio" class="brand" aria-label="ICARUS, ir al inicio"><img src="assets/img/icarus-wordmark.webp" alt="ICARUS" width="520" height="149" /></a>
+          <p class="footer__tag">Herramientas digitales para quienes quieren llegar más alto.</p>
+        </div>
+        <ul class="footer__links">
+          <li><a href="#inicio">Inicio</a></li><li><a href="#herramientas">Herramientas</a></li><li><a href="#forja">Tu web</a></li><li><a href="#sobre">Sobre ICARUS</a></li><li><a href="#contacto">Contacto</a></li>
+        </ul>
+      </div>
+      <div class="footer__legal">
+        <p>ICARUS es anónimo por diseño: sin cuentas, sin cookies de seguimiento ni analíticas. Es un proyecto independiente. Las herramientas marcadas como demo son simulaciones con fines educativos y no ejecutan operaciones reales. Deriv, Nequi, Binance y Daviplata son marcas de sus respectivos dueños; ICARUS no está afiliado a ellas.</p>
+        <p>© <span id="year"></span> ICARUS</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- MODAL -->
+  <div class="viewer" id="viewer" role="dialog" aria-modal="true" aria-labelledby="vwTitle" aria-hidden="true">
+    <div class="viewer__bar">
+      <div class="viewer__id"><strong id="vwTitle"></strong><span class="seal" id="vwSeal">Demo</span><span class="seal seal--lock">Anónimo</span></div>
+      <div class="viewer__tools">
+        <div class="seg" id="vwSeg" role="group" aria-label="Dispositivo">
+          <button type="button" data-dev="desktop" aria-pressed="true">Escritorio</button>
+          <button type="button" data-dev="phone" aria-pressed="false">Móvil</button>
+        </div>
+        <button type="button" class="ib" id="vwReload" aria-label="Reiniciar la demo" title="Reiniciar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg></button>
+        <button type="button" class="ib" id="vwNew" aria-label="Abrir en pestaña nueva" title="Abrir en pestaña nueva"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></button>
+        <button type="button" class="modal__close" id="vwClose" aria-label="Cerrar vista">✕</button>
+      </div>
+    </div>
+    <div class="viewer__stage" id="vwStage"><div class="viewer__dev" id="vwDev"></div></div>
+    <p class="viewer__note" id="vwNote"></p>
+  </div>
+
+  <div class="modal" id="toolModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" hidden>
+    <div class="modal__card tablet" id="modalCard">
+      <div class="modal__head">
+        <div><span class="tool__cat" id="modalCat"></span><h3 id="modalTitle"></h3></div>
+        <button class="modal__close" id="modalClose" aria-label="Cerrar">✕</button>
+      </div>
+      <div class="modal__body" id="modalBody"></div>
+      <div class="modal__actions" id="modalActions"></div>
+    </div>
+  </div>
+
+  <script src="assets/js/main.js" defer></script>
+</body>
+</html>

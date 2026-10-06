@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="es" class="no-js" data-root="./">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>ICARUS — Diseño y desarrollo web en Colombia</title>
+  <meta name="description" content="ICARUS diseña y desarrolla landing pages, tiendas virtuales, sistemas con bases de datos y software personalizado. Explora demostraciones reales y cotiza por WhatsApp.">
+  <meta name="theme-color" content="#060607">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="./">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="ICARUS">
+  <meta property="og:title" content="ICARUS — Diseña tu página web">
+  <meta property="og:description" content="Landing pages, tiendas virtuales, sistemas y software a la medida. Mira las demostraciones y cotiza por WhatsApp.">
+  <meta property="og:image" content="assets/img/og-image.jpg">
+  <meta property="og:locale" content="es_CO">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="icon" href="favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png">
+  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+  <link rel="manifest" href="site.webmanifest">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Cormorant+Garamond:ital,wght@0,500;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="preload" as="image" href="assets/img/icarus-logo.webp" type="image/webp">
+  <link rel="stylesheet" href="assets/css/icarus.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ProfessionalService",
+    "name": "ICARUS",
+    "description": "Diseño y desarrollo de páginas web, tiendas virtuales, sistemas y software personalizado.",
+    "areaServed": "CO",
+    "image": "assets/img/og-image.jpg",
+    "serviceType": ["Landing pages", "Tiendas virtuales", "Sistemas con bases de datos", "Software personalizado"]
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Saltar al contenido</a>
+
+  <div class="loader" aria-hidden="true">
+    <div class="loader__inner">
+      <img class="loader__logo" src="assets/img/icarus-logo-sm.webp" alt="" width="465" height="363">
+      <div class="loader__bar"></div>
+    </div>
+  </div>
+  <div class="page-veil" aria-hidden="true"></div>
+
+  <canvas id="embers" aria-hidden="true"></canvas>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="vignette" aria-hidden="true"></div>
+  <div class="feather-layer" aria-hidden="true"></div>
+
+  <!-- ================= ENCABEZADO ================= -->
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="./" aria-label="ICARUS — Inicio">
+        <img src="assets/img/icarus-logo-sm.webp" alt="ICARUS" width="59" height="46">
+      </a>
+      <nav class="nav" aria-label="Principal">
+        <ul class="nav__links" id="nav-links">
+          <li><a href="#inicio">Inicio</a></li>
+          <li><a href="#servicios">Servicios</a></li>
+          <li><a href="#categorias">Categorías</a></li>
+          <li><a href="#demostraciones">Demostraciones</a></li>
+          <li><a href="#nosotros">Nosotros</a></li>
+          <li><a href="#contacto">Contacto</a></li>
+          <li><a href="../">Ir a ICARUS</a></li>
+          <li class="nav__mobile-cta"><a class="btn btn--blood" href="https://wa.me/573166219962" data-wa="general" target="_blank" rel="noopener noreferrer">Hablemos</a></li>
+        </ul>
+        <a class="btn btn--blood btn--sm nav__cta" href="https://wa.me/573166219962" data-wa="general" target="_blank" rel="noopener noreferrer">Hablemos</a>
+        <button class="menu-toggle" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="nav-links">
+          <span></span><span></span><span></span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <!-- ================= HERO ================= -->
+    <section class="hero" id="inicio" aria-labelledby="hero-title">
+      <div class="hero__bg" aria-hidden="true">
+        <div class="hero__glow" data-parallax="0.15"></div>
+        <div class="hero__runes" data-parallax="0.3">
+          <svg viewBox="0 0 600 600">
+            <defs>
+              <path id="ring-a" d="M300,300 m-260,0 a260,260 0 1,1 520,0 a260,260 0 1,1 -520,0"/>
+              <path id="ring-b" d="M300,300 m-205,0 a205,205 0 1,1 410,0 a205,205 0 1,1 -410,0"/>
+            </defs>
+            <g fill="none" stroke="rgba(200,202,209,.14)">
+              <circle cx="300" cy="300" r="282"/>
+              <circle cx="300" cy="300" r="238"/>
+              <circle cx="300" cy="300" r="186" stroke="rgba(179,38,30,.22)"/>
+            </g>
+            <text fill="rgba(200,202,209,.22)" font-size="20" letter-spacing="14"><textPath href="#ring-a">ᚠᚢᚦᚨᚱᚲᚷᚹᚺᚾᛁᛃᛇᛈᛉᛊᛏᛒᛖᛗᛚᛜᛞᛟ ᚠᚢᚦᚨᚱᚲᚷᚹᚺᚾᛁᛃᛇᛈᛉᛊᛏᛒᛖᛗᛚᛜᛞᛟ ᚠᚢᚦᚨᚱᚲᚷᚹ</textPath></text>
+          </svg>
+        </div>
+        <div class="hero__fog"></div>
+      </div>
+
+      <div class="wrap hero__grid">
+        <div class="hero__copy">
+          <span class="eyebrow fade-up" style="--d:.2s"><span class="rune">ᛁ</span>Estudio de desarrollo digital</span>
+          <h1 class="h-display hero__title" id="hero-title" data-split>
+            <span class="line">Diseña tu</span>
+            <span class="line text-silver">página web.</span>
+          </h1>
+          <p class="lede hero__sub fade-up" style="--d:1.1s">Transformamos tus ideas en experiencias digitales. Desde páginas informativas hasta plataformas inteligentes, desarrollamos soluciones digitales diseñadas para impulsar tu negocio.</p>
+          <div class="hero__actions fade-up" style="--d:1.3s">
+            <a class="btn btn--blood" href="#servicios">Explorar servicios</a>
+            <a class="btn btn--ghost" href="#demostraciones">Ver demostraciones</a>
+          </div>
+        </div>
+        <div class="hero__emblem fade-up" style="--d:.5s" data-parallax="-0.08">
+          <picture>
+            <source srcset="assets/img/icarus-logo.webp" type="image/webp">
+            <img src="assets/img/icarus-logo.png" alt="Logo de ICARUS: el nombre junto a una figura alada en ascenso" width="931" height="726" fetchpriority="high">
+          </picture>
+        </div>
+      </div>
+
+      <a class="hero__scroll" href="#intro" aria-label="Bajar a la siguiente sección">DESCIENDE<i></i></a>
+    </section>
+
+    <!-- ================= INTRO ================= -->
+    <section class="section intro" id="intro" aria-labelledby="intro-title">
+      <div class="wrap">
+        <div class="ornament reveal" aria-hidden="true"><span></span></div>
+        <h2 class="intro__quote reveal" id="intro-title">No todos los proyectos necesitan lo mismo.</h2>
+        <p class="lede reveal" style="margin:0 auto;--rd:.1s">Por eso ofrecemos diferentes soluciones digitales, adaptadas a las necesidades de empresas, emprendedores, marcas y proyectos personales.</p>
+
+        <div class="intro__pillars reveal" style="--rd:.2s">
+          <div class="pillar"><span class="rune" aria-hidden="true">ᛟ</span><b>A la medida</b><span>Cada proyecto se diseña desde cero para tu marca.</span></div>
+          <div class="pillar"><span class="rune" aria-hidden="true">ᛉ</span><b>Responsive</b><span>Impecable en celular, tablet y computador.</span></div>
+          <div class="pillar"><span class="rune" aria-hidden="true">ᛏ</span><b>Funcional</b><span>Sistemas reales, no maquetas que solo se ven bien.</span></div>
+          <div class="pillar"><span class="rune" aria-hidden="true">ᛊ</span><b>Directo</b><span>Hablas conmigo por WhatsApp, sin intermediarios.</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= CATEGORÍAS ================= -->
+    <section class="section section--stone" id="categorias" aria-labelledby="cat-title">
+      <div class="wrap">
+        <header class="section__head section__head--center reveal">
+          <span class="eyebrow"><span class="rune">ᚲ</span>Capítulo I · Categorías</span>
+          <h2 class="h-section" id="cat-title">Elige tu camino</h2>
+          <p class="lede">Cuatro caminos para cuatro tipos de proyecto. Entra en una categoría para ver los servicios que contiene.</p>
+        </header>
+        <div class="cat-grid" id="cat-grid"></div>
+      </div>
+    </section>
+
+    <!-- ================= SERVICIOS ================= -->
+    <section class="section catalog" id="servicios" aria-labelledby="svc-title">
+      <div class="wrap">
+        <header class="section__head reveal">
+          <span class="eyebrow"><span class="rune">ᛊ</span>Capítulo II · Servicios</span>
+          <h2 class="h-section" id="svc-title">El arsenal completo</h2>
+          <p class="lede">Busca por nombre o filtra por categoría. Cada servicio tiene su ficha, su demostración y su botón para pedirlo por WhatsApp.</p>
+        </header>
+
+        <div class="catalog__bar" role="search">
+          <div class="search">
+            <label for="svc-search" class="sr-only">Buscar servicios</label>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+            <input id="svc-search" type="search" placeholder="Buscar: tienda, reservas, dashboard…" autocomplete="off" maxlength="60">
+          </div>
+          <div class="filters" id="svc-filters" role="group" aria-label="Filtrar por categoría"></div>
+        </div>
+        <p class="catalog__meta" id="svc-meta" aria-live="polite"></p>
+        <div class="svc-grid" id="svc-grid"></div>
+      </div>
+    </section>
+
+    <!-- ================= DEMOSTRACIONES ================= -->
+    <section class="section section--stone" id="demostraciones" aria-labelledby="demo-title">
+      <div class="wrap">
+        <header class="section__head section__head--center reveal">
+          <span class="eyebrow"><span class="rune">ᛞ</span>Capítulo III · Demostraciones</span>
+          <h2 class="h-section" id="demo-title">Pruébalas antes de pedirlas</h2>
+          <p class="lede">Demostraciones reales y navegables. Ábrelas, haz clic, agrega al carrito, reserva. Si te gusta una, pulsa <strong>Quiero esta</strong>.</p>
+        </header>
+        <div class="demo-grid" id="demo-grid"></div>
+      </div>
+    </section>
+
+    <!-- ================= COMPARATIVA ================= -->
+    <section class="section" id="comparar" aria-labelledby="cmp-title">
+      <div class="wrap">
+        <header class="section__head reveal">
+          <span class="eyebrow"><span class="rune">ᛗ</span>Capítulo IV · Diferencias</span>
+          <h2 class="h-section" id="cmp-title">¿Cuál necesitas?</h2>
+          <p class="lede">La diferencia está en lo que la página tiene que <em>hacer</em>: mostrar información, guardar datos o resolver un proceso completo.</p>
+        </header>
+        <div class="compare reveal" id="compare" tabindex="0" aria-label="Tabla comparativa de tipos de proyecto"></div>
+        <p class="compare-hint">Desliza la tabla horizontalmente para ver todas las columnas →</p>
+      </div>
+    </section>
+
+    <!-- ================= HOSTING ================= -->
+    <section class="section section--stone" id="hosting" aria-labelledby="host-title">
+      <div class="wrap">
+        <header class="section__head section__head--center reveal">
+          <span class="eyebrow"><span class="rune">ᚺ</span>Capítulo V · Publicación</span>
+          <h2 class="h-section" id="host-title">Hosting y dominio</h2>
+          <p class="lede">Tu proyecto puede contratarse con o sin publicación incluida. Tú decides.</p>
+        </header>
+        <div class="host-grid">
+          <article class="host-card lit reveal">
+            <span class="host-card__num">OPCIÓN I</span>
+            <h3>Desarrollo web sin hosting ni dominio</h3>
+            <p>Recibes el proyecto desarrollado, listo para publicar, y contratas tu propio alojamiento y dominio con el proveedor que prefieras.</p>
+            <ul class="check-list">
+              <li>Entrega de todos los archivos del proyecto</li>
+              <li>Guía para publicarlo en tu proveedor</li>
+              <li>Control total sobre tus cuentas</li>
+              <li>Ideal si ya tienes hosting o equipo técnico</li>
+            </ul>
+            <button class="btn btn--ghost" type="button" data-quote-hosting="sin">Cotizar sin hosting</button>
+          </article>
+          <article class="host-card host-card--featured lit reveal" style="--rd:.1s">
+            <span class="host-card__num">OPCIÓN II</span>
+            <h3>Desarrollo web con hosting y dominio</h3>
+            <p>Una solución más completa: se contempla la publicación del sitio y la configuración del dominio, según el plan contratado.</p>
+            <ul class="check-list">
+              <li>Publicación del sitio en internet</li>
+              <li>Configuración del dominio (tumarca.com / .co)</li>
+              <li>Certificado de seguridad HTTPS</li>
+              <li>Sin preocuparte por la parte técnica</li>
+            </ul>
+            <button class="btn btn--blood" type="button" data-quote-hosting="con">Cotizar con hosting</button>
+          </article>
+        </div>
+        <p class="note reveal" id="hosting-note">Los costos de hosting, dominio y sus renovaciones varían según el proveedor y el plan, y se especifican en cada cotización.</p>
+      </div>
+    </section>
+
+    <!-- ================= PROCESO ================= -->
+    <section class="section section--tight" aria-labelledby="proc-title">
+      <div class="wrap">
+        <header class="section__head section__head--center reveal">
+          <span class="eyebrow"><span class="rune">ᚱ</span>El ascenso</span>
+          <h2 class="h-section" id="proc-title">De la idea al vuelo</h2>
+        </header>
+        <ol class="steps" style="list-style:none;padding:0;margin:0">
+          <li class="step reveal"><div class="step__mark"><span>I</span></div><h3>Explora</h3><p>Recorre categorías y servicios.</p></li>
+          <li class="step reveal" style="--rd:.1s"><div class="step__mark"><span>II</span></div><h3>Prueba</h3><p>Abre las demostraciones y navégalas.</p></li>
+          <li class="step reveal" style="--rd:.2s"><div class="step__mark"><span>III</span></div><h3>Elige</h3><p>Pulsa «Quiero esta» o arma tu cotización.</p></li>
+          <li class="step reveal" style="--rd:.3s"><div class="step__mark"><span>IV</span></div><h3>Despega</h3><p>Hablamos por WhatsApp y empezamos.</p></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ================= NOSOTROS ================= -->
+    <section class="section" id="nosotros" aria-labelledby="about-title">
+      <div class="wrap about">
+        <div class="about__emblem reveal" aria-hidden="true">
+          <img src="assets/img/icarus-symbol.webp" alt="" width="385" height="710" loading="lazy">
+        </div>
+        <div class="reveal" style="--rd:.1s">
+          <span class="eyebrow"><span class="rune">ᛖ</span>Nosotros</span>
+          <h2 class="h-section" id="about-title">Construimos alas que sí resisten el sol</h2>
+          <p class="lede">ICARUS es un estudio colombiano de diseño y desarrollo web. Unimos dirección visual cinematográfica con ingeniería sólida para que tu marca no solo se vea poderosa en internet: también funcione.</p>
+          <p class="myth">Ícaro voló demasiado cerca del sol porque sus alas no estaban hechas para tanto. Nosotros construimos las tuyas para llegar alto y quedarse arriba.</p>
+          <div class="about__values">
+            <div><h3>Diseño con carácter</h3><p>Nada de plantillas genéricas. Cada proyecto tiene identidad propia.</p></div>
+            <div><h3>Código limpio</h3><p>Rápido, seguro y preparado para crecer con tu negocio.</p></div>
+            <div><h3>Trato directo</h3><p>Hablas con quien diseña y programa tu proyecto.</p></div>
+            <div><h3>Acompañamiento</h3><p>Te guiamos en la publicación y en los primeros pasos.</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= COTIZACIÓN ================= -->
+    <section class="section section--stone" id="contacto" aria-labelledby="quote-title">
+      <div class="wrap">
+        <header class="section__head reveal">
+          <span class="eyebrow"><span class="rune">ᚷ</span>Capítulo VI · Cotización</span>
+          <h2 class="h-section" id="quote-title">Arma tu cotización</h2>
+          <p class="lede">Elige lo que necesitas y envíalo por WhatsApp con un clic. El mensaje se escribe solo.</p>
+        </header>
+
+        <div class="quote">
+          <form class="panel reveal" id="quote-form" novalidate>
+            <div class="form-grid">
+              <div class="field">
+                <label for="q-cat">Categoría</label>
+                <select id="q-cat" name="categoria" required></select>
+                <p class="error">Elige una categoría.</p>
+              </div>
+              <div class="field">
+                <label for="q-type">Tipo de proyecto</label>
+                <select id="q-type" name="tipo" required></select>
+                <p class="error">Elige el tipo de proyecto.</p>
+              </div>
+
+              <div class="field full">
+                <fieldset>
+                  <legend>¿Qué necesitas?</legend>
+                  <div class="opt-grid" id="q-needs"></div>
+                </fieldset>
+              </div>
+
+              <div class="field full">
+                <fieldset>
+                  <legend>Hosting y dominio</legend>
+                  <div class="opt-grid">
+                    <label class="opt opt--radio"><input type="radio" name="hosting" value="con"><span>Con hosting y dominio</span></label>
+                    <label class="opt opt--radio"><input type="radio" name="hosting" value="sin"><span>Sin hosting ni dominio</span></label>
+                    <label class="opt opt--radio"><input type="radio" name="hosting" value="asesoria" checked><span>No sé, necesito asesoría</span></label>
+                    <label class="opt opt--radio"><input type="radio" name="hosting" value="tengo"><span>Ya tengo dominio</span></label>
+                  </div>
+                </fieldset>
+              </div>
+
+              <div class="field">
+                <label for="q-name">Tu nombre <span style="text-transform:none;letter-spacing:0">(opcional)</span></label>
+                <input id="q-name" name="nombre" type="text" maxlength="60" autocomplete="name">
+              </div>
+              <div class="field">
+                <label for="q-biz">Negocio o marca <span style="text-transform:none;letter-spacing:0">(opcional)</span></label>
+                <input id="q-biz" name="negocio" type="text" maxlength="80" autocomplete="organization">
+              </div>
+
+              <div class="field full">
+                <label for="q-idea">Describe tu idea</label>
+                <textarea id="q-idea" name="idea" maxlength="800" placeholder="Ej.: Tengo una tienda de ropa en Armenia y quiero vender en línea con pagos y envíos…"></textarea>
+                <div class="hint"><span>Entre más detalles, mejor la cotización.</span><span id="q-count">0/800</span></div>
+              </div>
+
+              <div class="full">
+                <button class="btn btn--blood btn--block" type="submit">
+                  <span id="wa-ico-slot"></span> Enviar solicitud por WhatsApp
+                </button>
+              </div>
+            </div>
+          </form>
+
+          <aside class="panel preview reveal" style="--rd:.1s" aria-labelledby="preview-title">
+            <h3 id="preview-title">Vista previa del mensaje</h3>
+            <p>Esto es lo que llegará a WhatsApp. Puedes editarlo antes de enviarlo.</p>
+            <div class="wa-phone">
+              <div class="wa-phone__head">
+                <img src="assets/img/icarus-symbol.webp" alt="" width="32" height="32">
+                <div>ICARUS<small>Desarrollo web</small></div>
+              </div>
+              <div class="wa-phone__body">
+                <div class="wa-bubble" id="wa-preview"></div>
+              </div>
+            </div>
+            <p class="note">No se envía nada hasta que pulses «Enviar» dentro de WhatsApp. Los precios se definen en la cotización según el alcance de tu proyecto.</p>
+          </aside>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="site-footer">
+    <div class="wrap">
+      <div class="footer__grid">
+        <div class="footer__brand">
+          <img src="assets/img/icarus-logo-sm.webp" alt="ICARUS" width="465" height="363" loading="lazy">
+          <p>Diseño y desarrollo web de alto nivel. Páginas, tiendas, sistemas y software para marcas que quieren volar alto.</p>
+          <a class="btn btn--blood btn--sm" href="https://wa.me/573166219962" data-wa="general" target="_blank" rel="noopener noreferrer">Contactar por WhatsApp</a>
+        </div>
+        <div>
+          <h4>Explora</h4>
+          <ul>
+            <li><a href="#servicios">Servicios</a></li>
+            <li><a href="#categorias">Categorías</a></li>
+            <li><a href="#demostraciones">Demostraciones</a></li>
+            <li><a href="#comparar">Comparar opciones</a></li>
+            <li><a href="#hosting">Hosting y dominio</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Demostraciones</h4>
+          <ul id="footer-demos"></ul>
+        </div>
+        <div>
+          <h4>Contacto</h4>
+          <ul>
+            <li><a href="#contacto">Solicitar cotización</a></li>
+            <li><a href="https://wa.me/573166219962" data-wa="general" target="_blank" rel="noopener noreferrer">WhatsApp</a></li>
+            <li><a href="#nosotros">Nosotros</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__runes" aria-hidden="true">ᚠᚢᚦᚨᚱᚲᚷᚹᚺᚾᛁᛃᛇᛈᛉᛊᛏᛒᛖᛗᛚᛜᛞᛟ</div>
+      <div class="footer__bottom">
+        <span>© <span data-year>2026</span> ICARUS · Desarrollo web · Colombia</span>
+        <span>Diseñado y desarrollado por ICARUS</span>
+      </div>
+    </div>
+  </footer>
+
+  <a class="fab-wa" href="https://wa.me/573166219962" data-wa="general" target="_blank" rel="noopener noreferrer" aria-label="Hablar por WhatsApp">
+    <span class="fab-wa__label">HABLEMOS</span>
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.21c5.46 0 9.91-4.45 9.91-9.91C21.95 6.45 17.5 2 12.04 2zm5.8 14.03c-.24.68-1.42 1.3-1.95 1.35-.5.05-.97.23-3.27-.68-2.77-1.09-4.52-3.92-4.66-4.1-.13-.18-1.11-1.48-1.11-2.82 0-1.34.7-2 .95-2.27.25-.27.54-.34.72-.34h.52c.17 0 .39-.06.61.47.23.54.77 1.88.84 2.01.07.14.11.3.02.48-.09.18-.14.3-.27.46-.14.16-.29.36-.41.48-.14.14-.28.29-.12.56.16.27.7 1.16 1.51 1.88 1.04.93 1.91 1.21 2.18 1.35.27.14.43.11.59-.07.16-.18.68-.79.86-1.07.18-.27.36-.23.61-.14.25.09 1.59.75 1.86.89.27.14.45.2.52.32.07.11.07.66-.17 1.34z"/></svg>
+  </a>
+  <button class="to-top" type="button" aria-label="Volver arriba">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+  </button>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/core.js"></script>
+  <script src="assets/js/fx.js"></script>
+  <script src="assets/js/home.js"></script>
+</body>
+</html>

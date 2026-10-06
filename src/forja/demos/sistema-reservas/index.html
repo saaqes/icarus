@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="es" data-root="../../" data-demo="sistema-reservas">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Termales Vertiente — Demostración de Sistema de Reservas | ICARUS</title>
+  <meta name="description" content="Demostración de sistema de reservas creado por ICARUS: calendario, horarios disponibles y confirmación con datos de prueba.">
+  <meta name="robots" content="noindex, follow">
+  <link rel="icon" href="../../favicon.ico" sizes="any">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,700;1,500&family=Nunito+Sans:wght@400;600;700;800&family=Cinzel:wght@700&family=Manrope:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/css/demo-bar.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="hero">
+    <div class="hero__waves" aria-hidden="true"><span></span><span></span><span></span></div>
+    <div class="wrap">
+      <p class="brand">◐ Termales Vertiente</p>
+      <h1>Reserva tu tiempo de <em>calma</em>.</h1>
+      <p class="sub">Aguas termales, spa y cabañas en la montaña. Elige tu plan, fecha y hora en menos de un minuto.</p>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <nav class="tabs" role="tablist" aria-label="Secciones">
+      <button role="tab" type="button" aria-selected="true" aria-controls="tab-reservar" id="t-reservar">Reservar</button>
+      <button role="tab" type="button" aria-selected="false" aria-controls="tab-mias" id="t-mias">Mis reservas <span class="badge" id="mine-count">0</span></button>
+      <button role="tab" type="button" aria-selected="false" aria-controls="tab-agenda" id="t-agenda">Agenda del negocio</button>
+    </nav>
+
+    <section class="panel" id="tab-reservar" role="tabpanel" aria-labelledby="t-reservar">
+      <ol class="stepper" id="stepper">
+        <li class="is-on">Plan</li><li>Fecha y hora</li><li>Tus datos</li><li>Confirmación</li>
+      </ol>
+      <div id="step-body"></div>
+    </section>
+
+    <section class="panel" id="tab-mias" role="tabpanel" aria-labelledby="t-mias" hidden>
+      <div id="mine"></div>
+    </section>
+
+    <section class="panel" id="tab-agenda" role="tabpanel" aria-labelledby="t-agenda" hidden>
+      <div class="agenda-head">
+        <div><h2>Agenda del día</h2><p class="muted">Vista del administrador: ocupación por servicio y horario. Haz clic en un horario libre para bloquearlo.</p></div>
+        <label class="date-pick">Fecha <input type="date" id="agenda-date"></label>
+      </div>
+      <div id="agenda"></div>
+    </section>
+  </div>
+
+  <footer class="foot wrap">Termales Vertiente es un negocio ficticio. Las reservas se guardan solo en tu navegador.</footer>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="../../assets/js/config.js"></script>
+  <script src="../../assets/js/data.js"></script>
+  <script src="../../assets/js/core.js"></script>
+  <script src="../../assets/js/demo-bar.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

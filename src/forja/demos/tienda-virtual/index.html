@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="es" data-root="../../" data-demo="tienda-virtual">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NOVA Store — Demostración de Tienda Virtual | ICARUS</title>
+  <meta name="description" content="Demostración de tienda virtual creada por ICARUS: catálogo, filtros, carrito y pedido con datos de prueba.">
+  <meta name="robots" content="noindex, follow">
+  <link rel="icon" href="../../favicon.ico" sizes="any">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;700&family=Cinzel:wght@700&family=Manrope:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/css/demo-bar.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="promo" role="note">Envío gratis desde $200.000 · Usa el cupón <b>NOVA10</b> y obtén 10 % de descuento</div>
+
+  <header class="top">
+    <div class="wrap top__in">
+      <a class="logo" href="#catalogo" aria-label="NOVA Store">NOVA<span>®</span></a>
+      <div class="search">
+        <label class="sr" for="q">Buscar productos</label>
+        <input id="q" type="search" placeholder="Buscar productos" maxlength="40" autocomplete="off">
+      </div>
+      <button class="cart-btn" type="button" id="open-cart" aria-label="Abrir carrito" aria-controls="cart">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>
+        <span class="cart-count" id="cart-count" aria-live="polite">0</span>
+      </button>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="wrap hero__in">
+      <div>
+        <p class="tag">Colección Otoño · Drop 04</p>
+        <h1>Ropa urbana hecha en Colombia.</h1>
+        <p>Algodón peinado, cortes oversize y estampados en edición limitada.</p>
+        <a class="btn" href="#catalogo">Comprar ahora</a>
+      </div>
+      <div class="hero__art" aria-hidden="true">
+        <div class="ring"></div>
+        <div class="hero__item" id="hero-item"></div>
+        <span class="sticker">-20%<br><small>DROP 04</small></span>
+      </div>
+    </div>
+  </section>
+
+  <main class="wrap" id="catalogo">
+    <div class="bar">
+      <div class="tabs" role="group" aria-label="Categorías" id="tabs"></div>
+      <label class="sort">Ordenar
+        <select id="sort">
+          <option value="dest">Destacados</option>
+          <option value="asc">Precio: menor a mayor</option>
+          <option value="desc">Precio: mayor a menor</option>
+          <option value="new">Novedades</option>
+        </select>
+      </label>
+    </div>
+    <p class="count" id="count" aria-live="polite"></p>
+    <div class="grid" id="grid"></div>
+  </main>
+
+  <section class="perks">
+    <div class="wrap perks__in">
+      <div><b>Pago seguro</b><span>Tarjeta, PSE o contra entrega*</span></div>
+      <div><b>Cambios fáciles</b><span>30 días para cambiar tu talla</span></div>
+      <div><b>Envíos nacionales</b><span>2 a 5 días hábiles</span></div>
+    </div>
+  </section>
+
+  <footer class="foot"><div class="wrap">NOVA Store es una marca ficticia para demostración. *Los medios de pago se simulan.</div></footer>
+
+  <!-- Producto -->
+  <div class="overlay" id="product-modal" hidden>
+    <div class="pm" role="dialog" aria-modal="true" aria-labelledby="pm-title">
+      <button class="x" type="button" data-close aria-label="Cerrar">×</button>
+      <div class="pm__art" id="pm-art"></div>
+      <div class="pm__info">
+        <p class="tag" id="pm-cat"></p>
+        <h2 id="pm-title"></h2>
+        <p class="pm__price" id="pm-price"></p>
+        <p id="pm-desc"></p>
+        <fieldset class="sizes"><legend>Talla</legend><div id="pm-sizes"></div></fieldset>
+        <div class="qty"><button type="button" id="pm-minus" aria-label="Menos">−</button><output id="pm-qty">1</output><button type="button" id="pm-plus" aria-label="Más">+</button></div>
+        <button class="btn btn--full" type="button" id="pm-add">Agregar al carrito</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Carrito -->
+  <div class="overlay overlay--side" id="cart-overlay" hidden>
+    <aside class="cart" id="cart" role="dialog" aria-modal="true" aria-labelledby="cart-title">
+      <header class="cart__head"><h2 id="cart-title">Tu carrito</h2><button class="x" type="button" data-close aria-label="Cerrar carrito">×</button></header>
+      <div class="cart__body" id="cart-body"></div>
+      <footer class="cart__foot" id="cart-foot"></footer>
+    </aside>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="../../assets/js/config.js"></script>
+  <script src="../../assets/js/data.js"></script>
+  <script src="../../assets/js/core.js"></script>
+  <script src="../../assets/js/demo-bar.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="es" data-root="../../" data-demo="landing-page">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Café Altura — Demostración de Landing Page | ICARUS</title>
+  <meta name="description" content="Demostración de landing page creada por ICARUS: marca ficticia de café de especialidad.">
+  <meta name="robots" content="noindex, follow">
+  <link rel="icon" href="../../favicon.ico" sizes="any">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,800&family=DM+Sans:wght@400;500;700&family=Cinzel:wght@700&family=Manrope:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/css/demo-bar.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="nav" id="top">
+    <div class="container nav__in">
+      <a href="#inicio" class="logo" aria-label="Café Altura, inicio">
+        <svg viewBox="0 0 40 40" width="34" height="34" aria-hidden="true"><path d="M4 30 L14 14 L20 22 L26 10 L36 30 Z" fill="currentColor"/><circle cx="29" cy="9" r="3" fill="#e0a458"/></svg>
+        <span>Café Altura</span>
+      </a>
+      <nav aria-label="Secciones">
+        <ul class="nav__links" id="lp-links">
+          <li><a href="#origen">Origen</a></li>
+          <li><a href="#cafes">Cafés</a></li>
+          <li><a href="#opiniones">Opiniones</a></li>
+          <li><a href="#preguntas">Preguntas</a></li>
+          <li><a href="#contacto" class="pill">Contacto</a></li>
+        </ul>
+      </nav>
+      <button class="burger" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="lp-links"><span></span><span></span></button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="inicio">
+      <div class="container hero__grid">
+        <div class="hero__copy">
+          <p class="kicker">Café de especialidad · Quindío, Colombia</p>
+          <h1>El café que nace <em>a 1.800 metros</em> de altura.</h1>
+          <p class="hero__lead">Granos seleccionados a mano, tostados cada semana y enviados a tu puerta. Del cafetal a tu taza en menos de siete días.</p>
+          <div class="hero__cta">
+            <a href="#cafes" class="btn btn--dark">Ver nuestros cafés</a>
+            <a href="#origen" class="btn btn--line">Conoce la finca</a>
+          </div>
+          <dl class="stats">
+            <div><dt data-count="86">0</dt><dd>Puntaje SCA</dd></div>
+            <div><dt data-count="1800" data-suffix=" m">0</dt><dd>Altura de cultivo</dd></div>
+            <div><dt data-count="7" data-suffix=" días">0</dt><dd>Del tueste a tu taza</dd></div>
+          </dl>
+        </div>
+        <div class="hero__art" aria-hidden="true">
+          <div class="sun"></div>
+          <svg class="mountains" viewBox="0 0 500 300" preserveAspectRatio="none">
+            <path d="M0 220 L90 120 L160 190 L250 70 L340 180 L420 110 L500 200 L500 300 L0 300Z" fill="#2f4a3a"/>
+            <path d="M0 250 L120 170 L210 240 L300 160 L400 240 L500 190 L500 300 L0 300Z" fill="#3e6b4f"/>
+          </svg>
+          <div class="cup">
+            <div class="steam"><i></i><i></i><i></i></div>
+            <div class="cup__body"><span>ALTURA</span></div>
+            <div class="cup__handle"></div>
+            <div class="cup__plate"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="benefits">
+      <div class="container benefits__grid">
+        <article class="benefit reveal"><span class="benefit__ico">☀</span><h3>Secado al sol</h3><p>Proceso lento en camas africanas que realza las notas dulces del grano.</p></article>
+        <article class="benefit reveal"><span class="benefit__ico">⚖</span><h3>Comercio justo</h3><p>Pagamos a las familias caficultoras por encima del precio de mercado.</p></article>
+        <article class="benefit reveal"><span class="benefit__ico">✈</span><h3>Envío nacional</h3><p>Llegamos a toda Colombia en 2 a 4 días hábiles.</p></article>
+      </div>
+    </section>
+
+    <section class="origin" id="origen">
+      <div class="container origin__grid">
+        <div class="origin__card reveal">
+          <p class="kicker">Nuestra historia</p>
+          <h2>Tres generaciones cultivando en las montañas del Quindío.</h2>
+          <p>Café Altura nació en una pequeña finca familiar. Hoy trabajamos con doce familias vecinas que cuidan cada planta como lo hacían sus abuelos, con prácticas sostenibles y cosecha selectiva.</p>
+          <ul class="timeline">
+            <li><b>1968</b> Se siembran los primeros cafetos.</li>
+            <li><b>2004</b> Primera exportación de café especial.</li>
+            <li><b>2024</b> Abrimos la tienda en línea.</li>
+          </ul>
+        </div>
+        <div class="origin__visual reveal" aria-hidden="true">
+          <div class="leaf l1"></div><div class="leaf l2"></div><div class="leaf l3"></div>
+          <div class="bean b1"></div><div class="bean b2"></div><div class="bean b3"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="coffees" id="cafes">
+      <div class="container">
+        <div class="section-head reveal">
+          <p class="kicker">Tienda</p>
+          <h2>Elige tu perfil</h2>
+          <div class="toggle" role="group" aria-label="Presentación">
+            <button type="button" class="is-on" data-size="250" aria-pressed="true">250 g</button>
+            <button type="button" data-size="500" aria-pressed="false">500 g</button>
+          </div>
+        </div>
+        <div class="coffee-grid" id="coffee-grid"></div>
+      </div>
+    </section>
+
+    <section class="reviews" id="opiniones">
+      <div class="container">
+        <div class="section-head reveal"><p class="kicker">Opiniones de ejemplo</p><h2>Lo que dicen en la taza</h2></div>
+        <div class="slider reveal">
+          <div class="slider__track" id="slider-track">
+            <figure class="review"><blockquote>“Desde que lo probé no he vuelto al café de supermercado. Las notas a panela son increíbles.”</blockquote><figcaption>Cliente de ejemplo · Bogotá</figcaption></figure>
+            <figure class="review"><blockquote>“El envío llegó en dos días y el empaque conserva perfecto el aroma.”</blockquote><figcaption>Cliente de ejemplo · Medellín</figcaption></figure>
+            <figure class="review"><blockquote>“Lo usamos en nuestra cafetería y los clientes siempre preguntan cuál es.”</blockquote><figcaption>Cafetería de ejemplo · Pereira</figcaption></figure>
+          </div>
+          <div class="slider__nav">
+            <button type="button" id="prev" aria-label="Opinión anterior">←</button>
+            <div class="dots" id="dots"></div>
+            <button type="button" id="next" aria-label="Opinión siguiente">→</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="faq" id="preguntas">
+      <div class="container faq__grid">
+        <div class="reveal"><p class="kicker">Preguntas frecuentes</p><h2>Todo lo que quieres saber</h2><p>¿Tienes otra duda? Escríbenos y te respondemos el mismo día.</p></div>
+        <div class="accordion reveal">
+          <details open><summary>¿Lo envían en grano o molido?</summary><p>Como prefieras. Al hacer tu pedido eliges grano entero o molienda para prensa francesa, filtro o espresso.</p></details>
+          <details><summary>¿Cuánto tarda el envío?</summary><p>Entre 2 y 4 días hábiles a ciudades principales. Tostamos los lunes y despachamos los martes.</p></details>
+          <details><summary>¿Tienen suscripción?</summary><p>Sí: recibe tu café cada 15 o 30 días con un 10 % de descuento permanente.</p></details>
+          <details><summary>¿Venden al por mayor?</summary><p>Trabajamos con cafeterías y restaurantes. Contáctanos para conocer los precios por volumen.</p></details>
+        </div>
+      </div>
+    </section>
+
+    <section class="contact" id="contacto">
+      <div class="container contact__grid">
+        <div class="reveal">
+          <p class="kicker">Contacto</p>
+          <h2>Hablemos de café</h2>
+          <p>Déjanos tus datos y te escribimos. También puedes visitarnos en la finca con cita previa.</p>
+          <ul class="contact__info">
+            <li>📍 Vereda La Montaña, Quindío (ejemplo)</li>
+            <li>🕘 Lunes a sábado · 8:00 a. m. – 6:00 p. m.</li>
+          </ul>
+        </div>
+        <form class="form reveal" id="lp-form" novalidate>
+          <label>Nombre<input name="nombre" type="text" maxlength="60" required></label>
+          <label>Ciudad<input name="ciudad" type="text" maxlength="40" required></label>
+          <label>¿En qué te ayudamos?
+            <select name="motivo"><option>Quiero comprar café</option><option>Ventas al por mayor</option><option>Visitar la finca</option><option>Otro</option></select>
+          </label>
+          <label>Mensaje<textarea name="mensaje" rows="4" maxlength="400"></textarea></label>
+          <p class="form__error" id="lp-error" role="alert"></p>
+          <button class="btn btn--dark" type="submit">Enviar mensaje</button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__in">
+      <span>© Café Altura — marca ficticia para demostración.</span>
+      <a href="#top">Volver arriba ↑</a>
+    </div>
+  </footer>
+
+  <button class="wa-float" type="button" id="wa-float" aria-label="Escribir por WhatsApp (demostración)">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.21c5.46 0 9.91-4.45 9.91-9.91C21.95 6.45 17.5 2 12.04 2z"/></svg>
+  </button>
+
+  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" hidden>
+    <div class="modal__box">
+      <button class="modal__close" type="button" aria-label="Cerrar">×</button>
+      <h3 id="modal-title"></h3>
+      <p id="modal-text"></p>
+      <div class="modal__actions">
+        <button class="btn btn--dark" type="button" data-close>Entendido</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../../assets/js/config.js"></script>
+  <script src="../../assets/js/data.js"></script>
+  <script src="../../assets/js/core.js"></script>
+  <script src="../../assets/js/demo-bar.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

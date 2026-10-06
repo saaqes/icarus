@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="es" data-root="../../" data-demo="dashboard">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pulso Analytics — Demostración de Dashboard | ICARUS</title>
+  <meta name="description" content="Demostración de dashboard y automatizaciones creada por ICARUS con datos de prueba.">
+  <meta name="robots" content="noindex, follow">
+  <link rel="icon" href="../../favicon.ico" sizes="any">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&family=Cinzel:wght@700&family=Manrope:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/css/demo-bar.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="shell">
+    <nav class="rail" aria-label="Secciones del panel">
+      <span class="rail__logo" aria-hidden="true">◉</span>
+      <a href="#ventas" class="is-active" aria-label="Ventas" title="Ventas">◧</a>
+      <a href="#canales" aria-label="Canales" title="Canales">◔</a>
+      <a href="#pedidos" aria-label="Pedidos" title="Pedidos">☰</a>
+      <a href="#automatizaciones" aria-label="Automatizaciones" title="Automatizaciones">⚡</a>
+    </nav>
+
+    <main class="main">
+      <header class="head">
+        <div>
+          <p class="eyebrow">Pulso Analytics · Tienda de ejemplo</p>
+          <h1>Buenos días 👋</h1>
+        </div>
+        <div class="controls">
+          <div class="seg" role="group" aria-label="Periodo">
+            <button type="button" data-range="7">7 días</button>
+            <button type="button" data-range="30" class="is-on">30 días</button>
+            <button type="button" data-range="90">90 días</button>
+          </div>
+          <select id="channel" aria-label="Canal">
+            <option value="all">Todos los canales</option>
+            <option value="web">Tienda web</option>
+            <option value="wa">WhatsApp</option>
+            <option value="ig">Instagram</option>
+            <option value="pos">Punto físico</option>
+          </select>
+          <button class="ghost" type="button" id="export">Exportar CSV</button>
+        </div>
+      </header>
+
+      <section class="kpis" id="kpis" aria-label="Indicadores"></section>
+
+      <section class="grid2">
+        <article class="card" id="ventas">
+          <header class="card__head"><h2>Ventas vs. meta</h2><div class="legend"><span><i class="c1"></i>Ventas</span><span><i class="c2"></i>Meta</span></div></header>
+          <div class="chart" id="line-chart"></div>
+        </article>
+        <article class="card" id="canales">
+          <header class="card__head"><h2>Ventas por canal</h2></header>
+          <div class="donut-wrap"><div id="donut"></div><ul class="donut-legend" id="donut-legend"></ul></div>
+        </article>
+      </section>
+
+      <section class="grid2 grid2--rev">
+        <article class="card" id="pedidos">
+          <header class="card__head"><h2>Pedidos recientes</h2>
+            <select id="status-filter" aria-label="Filtrar por estado"><option value="all">Todos</option><option value="Pagado">Pagado</option><option value="Enviado">Enviado</option><option value="Pendiente">Pendiente</option></select>
+          </header>
+          <div class="table-wrap"><table><thead><tr><th scope="col">Pedido</th><th scope="col">Cliente</th><th scope="col">Canal</th><th scope="col">Total</th><th scope="col">Estado</th></tr></thead><tbody id="orders"></tbody></table></div>
+        </article>
+        <article class="card">
+          <header class="card__head"><h2>Top ciudades</h2></header>
+          <div id="cities" class="cities"></div>
+        </article>
+      </section>
+
+      <section class="card" id="automatizaciones">
+        <header class="card__head"><h2>Automatizaciones</h2><span class="muted">Actívalas o ejecútalas para ver el registro</span></header>
+        <div class="autos" id="autos"></div>
+        <div class="console" aria-live="polite"><div class="console__head">registro de ejecución</div><ol id="console"></ol></div>
+      </section>
+      <p class="foot">Datos ficticios generados para la demostración.</p>
+    </main>
+  </div>
+  <div class="tip" id="tip" role="tooltip" hidden></div>
+
+  <script src="../../assets/js/config.js"></script>
+  <script src="../../assets/js/data.js"></script>
+  <script src="../../assets/js/core.js"></script>
+  <script src="../../assets/js/demo-bar.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

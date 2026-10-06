@@ -1,0 +1,47 @@
+services:
+  - type: web
+    name: icarus
+    runtime: static
+    buildCommand: npm ci && npm run build
+    staticPublishPath: ./dist
+    envVars:
+      - key: NODE_VERSION
+        value: 22
+    routes:
+      - type: redirect
+        source: /forja/demos/tienda
+        destination: /forja/demos/tienda-virtual/
+      - type: redirect
+        source: /forja/demos/sistema
+        destination: /forja/demos/sistema-administrativo/
+      - type: redirect
+        source: /forja/demos/reservas
+        destination: /forja/demos/sistema-reservas/
+      - type: redirect
+        source: /forja/demos/landing
+        destination: /forja/demos/landing-page/
+    headers:
+      - path: /*
+        name: Content-Security-Policy
+        value: "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-src 'self'; frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests"
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /*
+        name: X-Frame-Options
+        value: SAMEORIGIN
+      - path: /*
+        name: Referrer-Policy
+        value: strict-origin-when-cross-origin
+      - path: /*
+        name: Permissions-Policy
+        value: camera=(), microphone=(), geolocation=(), payment=()
+      - path: /*
+        name: Strict-Transport-Security
+        value: max-age=31536000; includeSubDomains
+      - path: /assets/*
+        name: Cache-Control
+        value: public, max-age=86400
+      - path: /forja/assets/*
+        name: Cache-Control
+        value: public, max-age=86400

@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="es" data-root="../../" data-demo="portafolio">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Estudio Bruma — Demostración de Portafolio | ICARUS</title>
+  <meta name="description" content="Demostración de portafolio empresarial creada por ICARUS: estudio de arquitectura ficticio.">
+  <meta name="robots" content="noindex, follow">
+  <link rel="icon" href="../../favicon.ico" sizes="any">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500;600&family=Cinzel:wght@700&family=Manrope:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/css/demo-bar.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="hdr">
+    <div class="wrap hdr__in">
+      <a href="#inicio" class="mark">Bruma<sup>estudio</sup></a>
+      <nav aria-label="Secciones">
+        <ul id="pf-nav">
+          <li><a href="#proyectos">Proyectos</a></li>
+          <li><a href="#estudio">Estudio</a></li>
+          <li><a href="#proceso">Proceso</a></li>
+          <li><a href="#contacto">Contacto</a></li>
+        </ul>
+      </nav>
+      <button class="menu-btn" type="button" aria-expanded="false" aria-controls="pf-nav">Menú</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero wrap" id="inicio">
+      <p class="label">Arquitectura · Interiores · Paisaje — Eje Cafetero</p>
+      <h1>Diseñamos espacios <em>que respiran</em> con su paisaje.</h1>
+      <div class="hero__row">
+        <p>Estudio Bruma crea viviendas, espacios comerciales e interiores con materiales locales, luz natural y una relación honesta con el entorno.</p>
+        <a href="#proyectos" class="arrow-link">Ver proyectos <span aria-hidden="true">↓</span></a>
+      </div>
+      <div class="hero__art" id="hero-art" aria-hidden="true"></div>
+    </section>
+
+    <section class="projects wrap" id="proyectos">
+      <div class="sec-head">
+        <h2>Proyectos <span id="p-count"></span></h2>
+        <div class="filters" role="group" aria-label="Filtrar proyectos" id="filters"></div>
+      </div>
+      <div class="pgrid" id="pgrid"></div>
+    </section>
+
+    <section class="studio" id="estudio">
+      <div class="wrap studio__grid">
+        <div>
+          <p class="label">El estudio</p>
+          <h2>Un equipo pequeño, <em>obsesionado</em> con los detalles.</h2>
+          <p>Desde 2012 hemos desarrollado más de 60 proyectos en el Eje Cafetero. Trabajamos con pocos clientes a la vez para acompañar cada obra desde el primer boceto hasta la entrega.</p>
+          <dl class="numbers">
+            <div><dt>60+</dt><dd>Proyectos</dd></div>
+            <div><dt>12</dt><dd>Años</dd></div>
+            <div><dt>4</dt><dd>Premios regionales</dd></div>
+          </dl>
+        </div>
+        <ul class="team">
+          <li><span class="ava" style="background:#c9b79c">AM</span><div><b>Ana Mejía</b><small>Arquitecta directora</small></div></li>
+          <li><span class="ava" style="background:#8fa39a">DR</span><div><b>David Rincón</b><small>Diseño interior</small></div></li>
+          <li><span class="ava" style="background:#b5a7c4">LC</span><div><b>Lucía Cárdenas</b><small>Paisajismo</small></div></li>
+          <li class="team__note">Equipo ficticio para demostración.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="process wrap" id="proceso">
+      <p class="label">Proceso</p>
+      <ol class="steps">
+        <li><b>01</b><h3>Escucha</h3><p>Visitamos el lugar y entendemos cómo quieres vivirlo.</p></li>
+        <li><b>02</b><h3>Concepto</h3><p>Bocetos, maquetas y referencias de materiales.</p></li>
+        <li><b>03</b><h3>Proyecto</h3><p>Planos técnicos, presupuesto y licencias.</p></li>
+        <li><b>04</b><h3>Obra</h3><p>Dirección y seguimiento hasta la entrega.</p></li>
+      </ol>
+    </section>
+
+    <section class="contact" id="contacto">
+      <div class="wrap contact__grid">
+        <h2>¿Tienes un lugar <em>esperando</em> un proyecto?</h2>
+        <form id="pf-form" novalidate>
+          <label>Nombre<input name="n" type="text" maxlength="60"></label>
+          <label>Tipo de proyecto
+            <select name="t"><option>Vivienda</option><option>Comercial</option><option>Interiores</option><option>Paisaje</option></select>
+          </label>
+          <label>Cuéntanos<textarea name="m" rows="3" maxlength="400"></textarea></label>
+          <p class="err" role="alert"></p>
+          <button type="submit">Enviar <span aria-hidden="true">→</span></button>
+        </form>
+      </div>
+    </section>
+  </main>
+  <footer class="ftr wrap"><span>© Estudio Bruma — marca ficticia para demostración.</span><a href="#inicio">Arriba ↑</a></footer>
+
+  <div class="lb" id="lb" hidden>
+    <div class="lb__box" role="dialog" aria-modal="true" aria-labelledby="lb-title">
+      <div class="lb__art" id="lb-art"></div>
+      <div class="lb__info">
+        <p class="label" id="lb-cat"></p>
+        <h2 id="lb-title"></h2>
+        <dl class="lb__meta" id="lb-meta"></dl>
+        <p id="lb-desc"></p>
+        <div class="lb__nav">
+          <button type="button" id="lb-prev" aria-label="Proyecto anterior">←</button>
+          <span id="lb-pos"></span>
+          <button type="button" id="lb-next" aria-label="Proyecto siguiente">→</button>
+        </div>
+      </div>
+      <button class="lb__close" type="button" id="lb-close" aria-label="Cerrar">×</button>
+    </div>
+  </div>
+
+  <script src="../../assets/js/config.js"></script>
+  <script src="../../assets/js/data.js"></script>
+  <script src="../../assets/js/core.js"></script>
+  <script src="../../assets/js/demo-bar.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

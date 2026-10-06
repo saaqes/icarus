@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /herramientas/
+
+# Cuando tengas tu dominio, descomenta y reemplaza:
+# Sitemap: https://TU-DOMINIO/sitemap.xml
