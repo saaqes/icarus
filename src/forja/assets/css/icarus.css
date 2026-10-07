@@ -675,3 +675,14 @@ body.menu-open { overflow: hidden; }
 .live-demo { border: 1px solid var(--line-strong); border-radius: var(--radius); overflow: hidden; background: #1a1a1f; box-shadow: 0 40px 100px -50px rgba(0,0,0,.9); }
 .live-demo iframe { display: block; width: 100%; height: min(760px, 78vh); border: 0; background: #fff; }
 @media (max-width: 700px) { .live-demo iframe { height: 620px; } }
+
+/* ---------- Páginas creadas (vista previa en vivo) ---------- */
+.made-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px; }
+.made-card .browser { display: block; cursor: default; }
+.made__shot { position: relative; }
+.made__shot iframe { position: absolute; top: 0; left: 0; border: 0; transform-origin: 0 0; pointer-events: none; background: #0e0e11; opacity: 0; transition: opacity .6s var(--ease); }
+.made__shot.is-loaded iframe { opacity: 1; }
+.made__ph { position: absolute; inset: 0; display: grid; place-content: center; gap: 6px; text-align: center; color: var(--ash); font-size: 13px; }
+.made__ph b { font-family: var(--font-display); color: var(--gold-2, #e8c986); letter-spacing: .12em; font-size: 20px; }
+.made__shot.is-loaded .made__ph { opacity: 0; }
+@media (max-width: 760px) { .made-grid { grid-template-columns: 1fr; } }
