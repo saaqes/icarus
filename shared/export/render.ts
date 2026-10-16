@@ -23,6 +23,8 @@ export interface BuiltSite {
 }
 
 export interface BuildOptions {
+  /** Nombre de archivo de salida para recursos locales (el servidor lo deduce del tipo real del archivo). */
+  assetName?: (src: string) => string | undefined;
   /** `preview`: CSS en línea, recursos sin reescribir y enlaces entre páginas gestionados por el editor. */
   mode: "export" | "preview";
   projectName?: string;
@@ -44,7 +46,7 @@ class AssetMap {
   private map = new Map<string, string>();
   private used = new Set<string>();
   list: AssetRef[] = [];
-  constructor(private readonly keep: boolean) {}
+  constructor(private readonly keep: boolean, private readonly nameFor?: (src: string) => string | undefined) {}
 
   /** Devuelve la ruta de salida para una URL de recurso. `from`: contexto desde el que se referencia. */
   ref(src: string, from: "html" | "css"): string {
@@ -52,7 +54,8 @@ class AssetMap {
     if (this.keep || !src.startsWith("/")) return src;
     let out = this.map.get(src);
     if (!out) {
-      const base = (src.split("/").pop() || "recurso").split("?")[0].replace(/[^a-z0-9._-]/gi, "-").toLowerCase();
+      const given = this.nameFor?.(src);
+      const base = given ?? (src.split("/").pop() || "recurso").split("?")[0].replace(/[^a-z0-9._-]/gi, "-").toLowerCase();
       const hasExt = /\.[a-z0-9]{2,5}$/.test(base);
       let name = hasExt ? base : `${base}.${extOf(src)}`;
       let i = 2;
@@ -309,7 +312,7 @@ function head(doc: Doc, page: Page, assets: AssetMap, mode: BuildOptions["mode"]
 
 export function buildSite(doc: Doc, opts: BuildOptions): BuiltSite {
   const warnings: string[] = [];
-  const assets = new AssetMap(opts.mode === "preview");
+  const assets = new AssetMap(opts.mode === "preview", opts.assetName);
   const animations = doc.settings.animations;
   const ctx: Ctx = { doc, assets, mode: opts.mode, warnings, animations };
   const css = buildCss(doc, assets, animations);
@@ -375,4 +378,17 @@ Netlify, Vercel, GitHub Pages, Cloudflare Pages o el hosting de tu proveedor. Si
 
 Generado el ${new Date().toISOString().slice(0, 10)}.
 `;
+}
+
+/** Todas las URLs locales (empiezan por «/») que el documento referencia. */
+export function collectLocalAssets(doc: Doc): string[] {
+  const out = new Set<string>();
+  const add = (v: unknown) => { if (typeof v === "string" && v.startsWith("/")) out.add(v); };
+  add(doc.settings.favicon);
+  for (const n of Object.values(doc.nodes)) {
+    if (n.hidden) continue;
+    add(n.props.src); add(n.props.poster);
+    for (const layer of [n.s.base, n.s.tablet, n.s.mobile]) add(layer?.bgImage?.src);
+  }
+  return [...out];
 }

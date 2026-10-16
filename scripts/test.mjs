@@ -39,5 +39,5 @@ await build({
   outExtension: { ".js": ".mjs" },
 });
 const files = entries.map((f) => path.join(OUT, path.relative(path.join(ROOT, "tests"), f).replace(/\.ts$/, ".mjs")));
-const r = spawnSync(process.execPath, ["--disable-warning=ExperimentalWarning", "--test", "--test-concurrency=1", ...files], { stdio: "inherit", cwd: ROOT });
+const r = spawnSync(process.execPath, ["--disable-warning=ExperimentalWarning", "--test", "--test-concurrency=1", "--test-force-exit", ...files], { stdio: "inherit", cwd: ROOT });
 process.exit(r.status ?? 1);
