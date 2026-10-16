@@ -17,7 +17,9 @@ export interface A11yIssue {
 function backgroundOf(doc: Doc, node: Node): string | null {
   let cur: Node | undefined = node;
   while (cur) {
-    const bg = resolveStyle(cur, "desktop").bg;
+    const st = resolveStyle(cur, "desktop");
+    if (st.bgImage?.src) return st.bgImage.overlay ? literalColor(st.bgImage.overlay, doc.theme) : null;
+    const bg = st.bg;
     if (bg) {
       if (isGradient(bg)) return literalColor(bg.stops[0]?.c, doc.theme);
       const lit = literalColor(bg, doc.theme);

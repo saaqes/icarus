@@ -300,4 +300,11 @@ body.has-preview { overflow: hidden; }
   .st-popover--cp { width: min(300px, calc(100vw - 16px)); }
 }
 @media (max-width: 900px) and (min-width: 561px) { .tb-right .st-btn:not(.tb-finish):not(.tb-preview) { display: inline-flex; } .tb-right .st-btn:not(.tb-finish):not(.tb-preview) span { display: none; } }
+@media (max-width: 640px) {
+  :root { --tb-h: 92px; }
+  .tb { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-rows: 44px 40px; align-content: center; row-gap: 2px; padding: 4px 6px; }
+  .tb-left { grid-column: 1; grid-row: 1; } .tb-right { grid-column: 2; grid-row: 1; }
+  .tb-center { grid-column: 1 / -1; grid-row: 2; justify-content: space-between; }
+  .tb-center .tb-sep { display: none; } .tb-devs { margin: 0 auto; }
+}
 @media (max-width: 560px) { .tb-center { gap: 2px; } .tb-devs { padding: 2px; } .tb-dev { width: 30px; } .pf-row { grid-template-columns: 96px minmax(0, 1fr); } .ap-grid { grid-template-columns: repeat(3, 1fr); } }

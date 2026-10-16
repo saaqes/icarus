@@ -134,6 +134,10 @@ export class ResourcesPanel {
         ["primary", "bg", "text"].includes(k) ? null : h("button", { type: "button", class: "st-icon-btn", "aria-label": `Eliminar color ${k}`, onclick: () => ed.removeThemeColor(k) }, ic("x", 13)));
     });
     this.body.append(
+      h("h3", { class: "in-title" }, "Paletas completas"),
+      h("div", { class: "rs-palettes" }, PALETTES.map((p) =>
+        h("button", { type: "button", class: "rs-palette", title: `Aplicar paleta ${p.label}`, onclick: () => { ed.applyPalette(p.colors); toast(`Paleta «${p.label}» aplicada`, "ok", 1400); } },
+          h("span", { class: "rs-palette__sw" }, [p.colors.bg, p.colors.surface, p.colors.primary, p.colors.secondary, p.colors.text].map((c) => h("i", { style: { background: c } }))), h("span", null, p.label)))),
       h("h3", { class: "in-title" }, "Colores globales"),
       h("p", { class: "pf-hint" }, "Al cambiar un color global se actualizan todos los elementos enlazados a él (en el selector de color aparecen con un icono de enlace)."),
       h("div", { class: "rs-colors" }, rows),
@@ -141,10 +145,6 @@ export class ResourcesPanel {
         const name = await promptDialog("Nuevo color global", "Nombre (sin espacios)", "", "Añadir");
         if (name) ed.addThemeColor(name, "#7c5cff");
       } }, ic("plus", 14), "Añadir color global"),
-      h("h3", { class: "in-title" }, "Paletas completas"),
-      h("div", { class: "rs-palettes" }, PALETTES.map((p) =>
-        h("button", { type: "button", class: "rs-palette", title: `Aplicar paleta ${p.label}`, onclick: () => { ed.applyPalette(p.colors); toast(`Paleta «${p.label}» aplicada`, "ok", 1400); } },
-          h("span", { class: "rs-palette__sw" }, [p.colors.bg, p.colors.surface, p.colors.primary, p.colors.secondary, p.colors.text].map((c) => h("i", { style: { background: c } }))), h("span", null, p.label)))),
       h("h3", { class: "in-title" }, "Colores guardados"),
       h("div", { class: "rs-saved" }, ed.doc.savedColors.length ? ed.doc.savedColors.map((c) => h("button", { type: "button", class: "cp-sw", style: { "--c": c }, title: `${c} (clic para quitar)`, "aria-label": `Quitar color guardado ${c}`, onclick: () => ed.removeSavedColor(c) })) : h("span", { class: "pf-hint" }, "Guarda colores desde el selector de color.")));
   }

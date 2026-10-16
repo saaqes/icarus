@@ -103,6 +103,10 @@ export const SITE_JS = `/* ICARUS Website Builder — comportamiento del sitio *
       });
     });
 
+    d.addEventListener('keydown', function (ev) {
+      if (ev.key === 'Escape' && window.parent !== window) window.parent.postMessage({ type: 'icarus-preview-esc' }, '*');
+    });
+
     /* Vista previa dentro del editor: los enlaces entre páginas se resuelven en la ventana contenedora. */
     d.addEventListener('click', function (ev) {
       var a = ev.target && ev.target.closest ? ev.target.closest('a[data-ic-page]') : null;

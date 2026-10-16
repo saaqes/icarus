@@ -43,6 +43,13 @@ for (const t of TEMPLATES) {
   });
 }
 
+test("las plantillas cumplen la revisión de accesibilidad (sin errores, contraste y encabezados en orden)", () => {
+  for (const t of TEMPLATES) {
+    const bad = checkAccessibility(t.build()).filter((i) => i.level === "error" || ["contrast", "heading-skip", "multi-h1", "no-h1", "img-alt"].includes(i.code));
+    assert.deepEqual(bad.map((i) => `${t.name}: ${i.message}`), []);
+  }
+});
+
 test("accesibilidad: detecta imágenes sin alt y botones sin texto", () => {
   const doc = blankDoc("X");
   const out = produce(doc, (tx) => {

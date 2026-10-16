@@ -1,47 +1,46 @@
+# ICARUS en Render: un servicio web Node (sitio estático + API del constructor) y una base de datos PostgreSQL.
+# Antes era un «Static Site»; ahora necesita servidor y base de datos para cuentas, proyectos, descargas y solicitudes.
+databases:
+  - name: icarus-db
+    databaseName: icarus
+    user: icarus
+    plan: free            # el plan gratuito de Render caduca a los 30 días: para producción usa un plan de pago
+
 services:
   - type: web
     name: icarus
-    runtime: static
-    buildCommand: npm ci && npm run build
-    staticPublishPath: ./dist
+    runtime: node
+    plan: free
+    # --include=dev: esbuild y TypeScript son devDependencies y se necesitan para compilar
+    buildCommand: npm ci --include=dev && npm run build
+    startCommand: node dist-server/index.js
+    healthCheckPath: /healthz
     envVars:
       - key: NODE_VERSION
         value: 22
-    routes:
-      - type: redirect
-        source: /forja/demos/tienda
-        destination: /forja/demos/tienda-virtual/
-      - type: redirect
-        source: /forja/demos/sistema
-        destination: /forja/demos/sistema-administrativo/
-      - type: redirect
-        source: /forja/demos/reservas
-        destination: /forja/demos/sistema-reservas/
-      - type: redirect
-        source: /forja/demos/landing
-        destination: /forja/demos/landing-page/
-    headers:
-      - path: /*
-        name: Content-Security-Policy
-        value: "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-src 'self' https://saaqes.github.io https://star-crumbs.onrender.com; frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests"
-      - path: /*
-        name: X-Content-Type-Options
-        value: nosniff
-      - path: /*
-        name: X-Frame-Options
-        value: SAMEORIGIN
-      - path: /*
-        name: Referrer-Policy
-        value: strict-origin-when-cross-origin
-      - path: /*
-        name: Permissions-Policy
-        value: camera=(), microphone=(), geolocation=(), payment=()
-      - path: /*
-        name: Strict-Transport-Security
-        value: max-age=31536000; includeSubDomains
-      - path: /assets/*
-        name: Cache-Control
-        value: public, max-age=86400
-      - path: /forja/assets/*
-        name: Cache-Control
-        value: public, max-age=86400
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: icarus-db
+          property: connectionString
+      - key: STORAGE_DRIVER
+        value: db
+      - key: EXPORT_TTL_DAYS
+        value: 14
+      # Configúralas en el panel de Render (Environment). Ver .env.example
+      - key: WHATSAPP_NUMBER
+        sync: false
+      - key: ADMIN_EMAILS
+        sync: false
+      - key: PUBLIC_BASE_URL
+        sync: false
+      - key: WHATSAPP_CLOUD_TOKEN
+        sync: false
+      - key: WHATSAPP_PHONE_NUMBER_ID
+        sync: false
+      - key: WHATSAPP_NOTIFY_TO
+        sync: false
+      - key: WHATSAPP_TEMPLATE
+        sync: false
+    # Las cabeceras de seguridad (CSP, HSTS…) y las redirecciones de /forja/demos/* las aplica ahora server/static.ts.

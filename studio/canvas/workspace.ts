@@ -9,7 +9,8 @@ import { Editor, EditorState, Rect } from "../core/editor";
 import { clamp, h, ic, menu, MenuItem, toast } from "../lib/dom";
 import { CanvasView } from "./view";
 
-const PAD = 56;
+const PAD_WIDE = 56;
+const PAD_NARROW = 12;
 const SNAP_PX = 6;
 const DRAG_THRESHOLD = 4;
 const LONG_PRESS_MS = 380;
@@ -54,7 +55,8 @@ export class Workspace {
   private lastClick: { id: string | null; at: number } = { id: null, at: 0 };
   private editEl: HTMLElement | null = null;
   private editId: string | null = null;
-  private frameLeft = PAD;
+  private pad = PAD_WIDE;
+  private frameLeft = PAD_WIDE;
   private unsub: () => void;
   private cleanups: (() => void)[] = [];
   private guideLines: { x1: number; y1: number; x2: number; y2: number }[] = [];
@@ -137,6 +139,8 @@ export class Workspace {
     const fw = s.widths[s.device];
     const z = s.zoom;
     const vw = this.scroller.clientWidth;
+    this.pad = vw < 700 ? PAD_NARROW : PAD_WIDE;
+    const PAD = this.pad;
     const contentH = Math.max(this.view.contentHeight(), this.frame.offsetHeight, 640);
     const worldW = Math.max(vw, fw * z + PAD * 2);
     this.frameLeft = Math.max(PAD, (worldW - fw * z) / 2);
@@ -154,6 +158,7 @@ export class Workspace {
   fit(mode: "width" | "page" = "width"): void {
     const s = this.ed.s;
     const fw = s.widths[s.device];
+    const PAD = this.scroller.clientWidth < 700 ? PAD_NARROW : PAD_WIDE;
     const vw = this.scroller.clientWidth - PAD * 2;
     let z = vw / fw;
     if (mode === "page") z = Math.min(z, (this.scroller.clientHeight - PAD * 2) / Math.max(400, this.frame.offsetHeight));
@@ -168,6 +173,7 @@ export class Workspace {
       newZ = clamp(Math.round(newZ * 100) / 100, 0.1, 4);
       if (newZ === oldZ) break z;
       const fw = s.widths[s.device];
+      const PAD = this.pad;
       const fx = (this.scroller.scrollLeft + cx - this.frameLeft) / oldZ;
       const fy = (this.scroller.scrollTop + cy - PAD) / oldZ;
       this.ed.setZoom(newZ);

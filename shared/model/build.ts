@@ -104,7 +104,7 @@ export const N = {
     return {
       type: "text", name: "Sobretítulo", ...o,
       props: { text, tag: "p", ...o.props },
-      s: { size: 13, weight: 700, ls: 2.4, transform: "uppercase", color: "$primary", ...o.s },
+      s: { size: 13, weight: 700, ls: 2.4, transform: "uppercase", color: "$accent", ...o.s },
       tablet: o.tablet, mobile: o.mobile,
     };
   },
@@ -112,7 +112,7 @@ export const N = {
     const { variant = "solid", ...rest } = o;
     const look: PartialStyle =
       variant === "solid"
-        ? { bg: "$primary", color: "$light", border: null }
+        ? { bg: "$primary", color: "$onprimary", border: null }
         : variant === "outline"
           ? { bg: null, color: "$text", border: { w: 1, color: "$muted", style: "solid" } }
           : { bg: null, color: "$text" };

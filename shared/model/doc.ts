@@ -49,6 +49,7 @@ export const DEFAULT_THEME: Theme = {
     muted: "#9a9ca5",
     light: "#ffffff",
     dark: "#060607",
+    onprimary: "#ffffff",
   },
   fonts: { heading: "Manrope", body: "Manrope" },
 };

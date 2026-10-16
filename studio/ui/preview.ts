@@ -64,6 +64,7 @@ export function openPreview(o: PreviewOptions): { close(): void } {
   const onMsg = (e: MessageEvent) => {
     if (e.source !== iframe.contentWindow) return;
     const d = e.data;
+    if (d && d.type === "icarus-preview-esc") { close(); return; }
     if (d && d.type === "icarus-preview-nav" && typeof d.page === "string" && doc.pages.some((p) => p.id === d.page)) { pageId = d.page; load(); }
   };
   const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") { e.stopPropagation(); close(); } };

@@ -156,7 +156,8 @@ function renderNode(ctx: Ctx, id: string, inherited?: { anim: Anim; index: numbe
     case "text": {
       const tag = p.tag || "p";
       const text = esc(String(p.text ?? ""));
-      const inner = p.href ? `<a href="${esc(hrefFor(ctx.doc, p.href, ctx.mode).href)}"${linkAttrs(ctx, p)}>${text}</a>` : text;
+      const th = p.href ? hrefFor(ctx.doc, p.href, ctx.mode) : null;
+      const inner = th ? `<a href="${esc(th.href)}"${th.page ? ` data-ic-page="${esc(th.page)}"` : ""}${linkAttrs(ctx, p)}>${text}</a>` : text;
       return `<${tag} ${common}>${inner}</${tag}>`;
     }
     case "button": {
@@ -173,7 +174,8 @@ function renderNode(ctx: Ctx, id: string, inherited?: { anim: Anim; index: numbe
     case "image": {
       if (!p.src) { ctx.warnings.push(`Imagen sin archivo: «${node.name}»`); return ""; }
       const img = `<img src="${esc(ctx.assets.ref(p.src, "html"))}" alt="${esc(String(p.alt ?? ""))}" loading="lazy" decoding="async">`;
-      const inner = p.href ? `<a href="${esc(hrefFor(ctx.doc, p.href, ctx.mode).href)}">${img}</a>` : img;
+      const ih = p.href ? hrefFor(ctx.doc, p.href, ctx.mode) : null;
+      const inner = ih ? `<a href="${esc(ih.href)}"${ih.page ? ` data-ic-page="${esc(ih.page)}"` : ""}>${img}</a>` : img;
       return `<div ${common}>${inner}</div>`;
     }
     case "video": {

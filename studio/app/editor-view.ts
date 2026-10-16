@@ -207,6 +207,7 @@ export function mountEditor(host: HTMLElement, opts: EditorViewOptions): () => v
   const root = h("div", { class: "ed", dataset: { sheet: "" } }, topbar, body, bottom);
   host.replaceChildren(root);
 
+  if (window.matchMedia("(max-width: 700px)").matches) ed.setDevice("mobile");
   ws = new Workspace(ed);
   center.appendChild(ws.el);
   props.playAnim = (id) => playAnim(id);
@@ -245,7 +246,6 @@ export function mountEditor(host: HTMLElement, opts: EditorViewOptions): () => v
   const applyState = (s: EditorState, prev?: EditorState) => {
     renderTop(s);
     root.dataset.sheet = s.sheet ?? "";
-    root.dataset.tab = s.leftTab;
     tabBtns.forEach((b) => { const on = b.dataset.tab === s.leftTab; b.classList.toggle("is-on", on); b.setAttribute("aria-selected", String(on)); });
     left.querySelectorAll<HTMLElement>(".ed-pane").forEach((p) => { p.hidden = p.dataset.pane !== s.leftTab; });
     if (prev && s.selection !== prev.selection && s.selection.length === 1 && s.leftTab !== "layers" && false) ed.store.set({ leftTab: "layers" });

@@ -22,7 +22,7 @@ export const ELEMENTS: ElementDef[] = [
   { id: "text", group: "Texto", label: "Texto", icon: "type", size: { w: 260, h: 28 }, build: () => N.text("Texto", { name: "Texto", s: { size: 16, color: "$text" } }) },
   {
     id: "link", group: "Texto", label: "Enlace", icon: "link", size: { w: 160, h: 26 },
-    build: () => N.text("Enlace de texto", { name: "Enlace", props: { href: "#", tag: "p" }, s: { size: 16, color: "$primary", underline: true, weight: 600 } }),
+    build: () => N.text("Enlace de texto", { name: "Enlace", props: { href: "#", tag: "p" }, s: { size: 16, color: "$accent", underline: true, weight: 600 } }),
   },
   { id: "button", group: "Básicos", label: "Botón", icon: "button", size: { w: 180, h: 48 }, build: () => N.button("Botón") },
   { id: "button-outline", group: "Básicos", label: "Botón contorno", icon: "button", size: { w: 180, h: 48 }, build: () => N.button("Botón", { variant: "outline", name: "Botón contorno" }) },
@@ -155,7 +155,7 @@ export function faq(): Spec {
     N.heading("Preguntas frecuentes", 2, { s: { textAlign: "center" } }),
     N.box({ name: "Preguntas", s: { gap: 14, w: "fill" } }, qa.map(([q, a]) =>
       N.box({ name: q, s: { padding: pad(20, 24), bg: "$surface", radius: 14, gap: 6, border: CARD_BORDER } }, [
-        N.heading(q, 4, { s: { size: 17 } }),
+        N.heading(q, 3, { s: { size: 17 } }),
         N.para(a, { s: { size: 15 } }),
       ]))),
   ]);
@@ -167,8 +167,8 @@ export function cta(): Spec {
     s: { padding: pad(88, 24), align: "center", gap: 20, bg: { kind: "linear", angle: 135, stops: [{ c: "$primary", p: 0 }, { c: "$secondary", p: 100 }] } },
     mobile: { padding: pad(56, 20) },
   }, [
-    N.heading("¿Listo para empezar?", 2, { s: { textAlign: "center", color: "$light" } }),
-    N.para("Da el primer paso hoy y deja que tu idea tenga su propio lugar en internet.", { s: { textAlign: "center", color: "rgba(255,255,255,0.86)", maxWidth: 560, size: 18 } }),
+    N.heading("¿Listo para empezar?", 2, { s: { textAlign: "center", color: "$onprimary" } }),
+    N.para("Da el primer paso hoy y deja que tu idea tenga su propio lugar en internet.", { s: { textAlign: "center", color: "$onprimary", maxWidth: 560, size: 18 } }),
     N.button("Crear mi página", { s: { bg: "$light", color: "$dark", alignSelf: "center", padding: pad(16, 34) }, hover: { bg: "$text" } }),
   ]);
 }
@@ -183,7 +183,7 @@ export function pricing(): Spec {
     N.box({ name: "Encabezado", s: { align: "center", gap: 10 } }, [N.heading("Planes simples", 2, { s: { textAlign: "center" } }), N.para("Elige el que mejor se ajuste a tu proyecto.", { s: { textAlign: "center" } })]),
     N.grid({ name: "Planes", s: { columns: 3, gap: 24, w: "fill" }, tablet: { columns: 1 }, mobile: { columns: 1 } }, plans.map(([nm, price, feats, hot]) =>
       N.card({ name: `Plan ${nm}`, s: { gap: 16, border: hot ? { w: 2, color: "$primary", style: "solid" } : CARD_BORDER } }, [
-        N.text(nm, { s: { weight: 700, size: 16, color: hot ? "$primary" : "$muted", transform: "uppercase", ls: 1.5 } }),
+        N.text(nm, { s: { weight: 700, size: 16, color: hot ? "$accent" : "$muted", transform: "uppercase", ls: 1.5 } }),
         N.text(price, { name: "Precio", s: { font: "$heading", size: 44, weight: 800, color: "$text" } }),
         N.divider(),
         N.box({ name: "Incluye", s: { gap: 10 } }, feats.map((f) => N.row({ s: { gap: 10 } }, [N.icon("check", { size: 18 }), N.text(f, { s: { size: 15, color: "$text" } })]))),
@@ -201,12 +201,12 @@ export function gallery(): Spec {
   ]);
 }
 
-export function contact(): Spec {
+export function contact(level: 1 | 2 = 2): Spec {
   return N.section({ name: "Contacto", attrs: { elId: "contacto" }, s: { padding: pad(88, 24), bg: "$surface" }, mobile: { padding: pad(56, 20) } }, [
     N.row({ name: "Columnas", s: { gap: 56, align: "start" }, tablet: { layout: "stack", gap: 32 } }, [
       N.box({ name: "Información", s: { w: "fill", gap: 16 } }, [
         N.eyebrow("Contacto"),
-        N.heading("Hablemos de tu proyecto", 2),
+        N.heading("Hablemos de tu proyecto", level),
         N.para("Cuéntanos qué necesitas y te respondemos lo antes posible."),
         N.row({ s: { gap: 10 } }, [N.icon("mail", { size: 20 }), N.text("hola@tusitio.com", { s: { color: "$text", size: 15 } })]),
         N.row({ s: { gap: 10 } }, [N.icon("phone", { size: 20 }), N.text("+57 300 000 0000", { s: { color: "$text", size: 15 } })]),
@@ -221,7 +221,7 @@ export function stats(): Spec {
   return N.section({ name: "Cifras", s: { padding: pad(56, 24), bg: "$bg" }, mobile: { padding: pad(40, 20) } }, [
     N.grid({ name: "Cifras", s: { columns: 4, gap: 24, align: "center" }, tablet: { columns: 2 }, mobile: { columns: 2, gap: 16 }, anim: anim("fade", { stagger: true }) },
       items.map(([n, l]) => N.box({ s: { align: "center", gap: 4 } }, [
-        N.text(n, { s: { font: "$heading", size: 40, weight: 800, color: "$primary", textAlign: "center" }, mobile: { size: 30 } }),
+        N.text(n, { s: { font: "$heading", size: 40, weight: 800, color: "$accent", textAlign: "center" }, mobile: { size: 30 } }),
         N.text(l, { s: { size: 14, color: "$muted", textAlign: "center" } }),
       ]))),
   ]);
@@ -232,13 +232,13 @@ export function footer(brand = "Mi marca"): Spec {
     N.row({ name: "Columnas", s: { gap: 40, align: "start", justify: "between", wrap: true }, tablet: { layout: "stack" } }, [
       N.box({ name: "Marca", s: { gap: 10, maxWidth: 320 } }, [
         N.text(brand, { name: "Logotipo", s: { font: "$heading", size: 22, weight: 800, color: "$light" } }),
-        N.para("Construido con ICARUS Website Builder.", { s: { size: 14 } }),
+        N.para("Construido con ICARUS Website Builder.", { s: { size: 14, color: "rgba(255,255,255,0.72)" } }),
       ]),
-      N.box({ name: "Enlaces", s: { gap: 8 } }, [N.text("Navegación", { s: { weight: 700, size: 14, color: "$light" } }), ...["Inicio", "Servicios", "Contacto"].map((t) => N.text(t, { props: { href: "#" }, s: { size: 14, color: "$muted" } }))]),
-      N.box({ name: "Contacto", s: { gap: 8 } }, [N.text("Contacto", { s: { weight: 700, size: 14, color: "$light" } }), N.text("hola@tusitio.com", { s: { size: 14, color: "$muted" } })]),
+      N.box({ name: "Enlaces", s: { gap: 8 } }, [N.text("Navegación", { s: { weight: 700, size: 14, color: "$light" } }), ...["Inicio", "Servicios", "Contacto"].map((t) => N.text(t, { props: { href: "#" }, s: { size: 14, color: "rgba(255,255,255,0.72)" } }))]),
+      N.box({ name: "Contacto", s: { gap: 8 } }, [N.text("Contacto", { s: { weight: 700, size: 14, color: "$light" } }), N.text("hola@tusitio.com", { s: { size: 14, color: "rgba(255,255,255,0.72)" } })]),
     ]),
-    N.divider(),
-    N.text(`© ${new Date().getFullYear()} ${brand}. Todos los derechos reservados.`, { s: { size: 13, color: "$muted" } }),
+    N.divider({ s: { bg: "rgba(255,255,255,0.5)" } }),
+    N.text(`© ${new Date().getFullYear()} ${brand}. Todos los derechos reservados.`, { s: { size: 13, color: "rgba(255,255,255,0.72)" } }),
   ]);
 }
 
@@ -264,22 +264,22 @@ export const TEXT_STYLES: TextStyleDef[] = [
   { id: "title", label: "Título", tag: "h1", style: { font: "$heading", size: 56, weight: 700, lh: 1.08, color: "$text", ls: 0, transform: "none" } },
   { id: "subtitle", label: "Subtítulo", tag: "h3", style: { font: "$heading", size: 24, weight: 600, lh: 1.25, color: "$text", ls: 0, transform: "none" } },
   { id: "paragraph", label: "Párrafo", tag: "p", style: { font: "$body", size: 17, weight: 400, lh: 1.65, color: "$muted", ls: 0, transform: "none" } },
-  { id: "highlight", label: "Texto destacado", tag: "p", style: { font: "$body", size: 20, weight: 600, lh: 1.5, color: "$primary", ls: 0, transform: "none" } },
-  { id: "label", label: "Etiqueta", tag: "p", style: { font: "$body", size: 13, weight: 700, lh: 1.3, color: "$primary", ls: 2.4, transform: "uppercase" } },
+  { id: "highlight", label: "Texto destacado", tag: "p", style: { font: "$body", size: 20, weight: 600, lh: 1.5, color: "$accent", ls: 0, transform: "none" } },
+  { id: "label", label: "Etiqueta", tag: "p", style: { font: "$body", size: 13, weight: 700, lh: 1.3, color: "$accent", ls: 2.4, transform: "uppercase" } },
 ];
 
 /* ---------- Paletas ---------- */
 
 export interface PaletteDef { id: string; label: string; colors: Record<string, string> }
 export const PALETTES: PaletteDef[] = [
-  { id: "icarus", label: "ICARUS", colors: { primary: "#b3261e", secondary: "#d9472b", accent: "#c9a35a", bg: "#0b0b0d", surface: "#17171b", text: "#f3f1ec", muted: "#9a9ca5", light: "#ffffff", dark: "#060607" } },
-  { id: "violeta", label: "Violeta", colors: { primary: "#7c3aed", secondary: "#a855f7", accent: "#f0abfc", bg: "#0a0712", surface: "#15101f", text: "#f5f3ff", muted: "#a8a0c2", light: "#ffffff", dark: "#05030a" } },
-  { id: "oceano", label: "Océano", colors: { primary: "#0ea5e9", secondary: "#38bdf8", accent: "#22d3ee", bg: "#06121b", surface: "#0c1f2e", text: "#ecf8ff", muted: "#8fb0c4", light: "#ffffff", dark: "#030a10" } },
-  { id: "esmeralda", label: "Esmeralda", colors: { primary: "#10b981", secondary: "#34d399", accent: "#fbbf24", bg: "#07120e", surface: "#0e1f18", text: "#ecfdf5", muted: "#8db3a2", light: "#ffffff", dark: "#030a07" } },
-  { id: "claro", label: "Claro minimal", colors: { primary: "#111827", secondary: "#374151", accent: "#2563eb", bg: "#ffffff", surface: "#f4f4f5", text: "#111827", muted: "#6b7280", light: "#ffffff", dark: "#0b0b0d" } },
-  { id: "calido", label: "Cálido", colors: { primary: "#c2410c", secondary: "#ea580c", accent: "#b45309", bg: "#fdf8f3", surface: "#f6ece1", text: "#2a1a10", muted: "#7b6552", light: "#ffffff", dark: "#1f130b" } },
-  { id: "rosa", label: "Rosa editorial", colors: { primary: "#be185d", secondary: "#ec4899", accent: "#f59e0b", bg: "#fff7fa", surface: "#fdeaf1", text: "#2b0a18", muted: "#7c5767", light: "#ffffff", dark: "#1a0610" } },
-  { id: "oro", label: "Oro y negro", colors: { primary: "#c9a35a", secondary: "#e2c07c", accent: "#b3261e", bg: "#0a0a0a", surface: "#151515", text: "#f6f1e6", muted: "#a39b88", light: "#ffffff", dark: "#050505" } },
+  { id: "icarus", label: "ICARUS", colors: { primary: "#b3261e", secondary: "#d9472b", accent: "#c9a35a", bg: "#0b0b0d", surface: "#17171b", text: "#f3f1ec", muted: "#9a9ca5", light: "#ffffff", dark: "#060607", onprimary: "#ffffff" } },
+  { id: "violeta", label: "Violeta", colors: { primary: "#7c3aed", secondary: "#a855f7", accent: "#f0abfc", bg: "#0a0712", surface: "#15101f", text: "#f5f3ff", muted: "#a8a0c2", light: "#ffffff", dark: "#05030a", onprimary: "#ffffff" } },
+  { id: "oceano", label: "Océano", colors: { primary: "#0ea5e9", secondary: "#38bdf8", accent: "#22d3ee", bg: "#06121b", surface: "#0c1f2e", text: "#ecf8ff", muted: "#8fb0c4", light: "#ffffff", dark: "#030a10", onprimary: "#03141f" } },
+  { id: "esmeralda", label: "Esmeralda", colors: { primary: "#10b981", secondary: "#34d399", accent: "#fbbf24", bg: "#07120e", surface: "#0e1f18", text: "#ecfdf5", muted: "#8db3a2", light: "#ffffff", dark: "#030a07", onprimary: "#03140b" } },
+  { id: "claro", label: "Claro minimal", colors: { primary: "#111827", secondary: "#374151", accent: "#2563eb", bg: "#ffffff", surface: "#f4f4f5", text: "#111827", muted: "#6b7280", light: "#ffffff", dark: "#0b0b0d", onprimary: "#ffffff" } },
+  { id: "calido", label: "Cálido", colors: { primary: "#c2410c", secondary: "#ea580c", accent: "#b45309", bg: "#fdf8f3", surface: "#f6ece1", text: "#2a1a10", muted: "#7b6552", light: "#ffffff", dark: "#1f130b", onprimary: "#ffffff" } },
+  { id: "rosa", label: "Rosa editorial", colors: { primary: "#be185d", secondary: "#ec4899", accent: "#b45309", bg: "#fff7fa", surface: "#fdeaf1", text: "#2b0a18", muted: "#7c5767", light: "#ffffff", dark: "#1a0610", onprimary: "#ffffff" } },
+  { id: "oro", label: "Oro y negro", colors: { primary: "#c9a35a", secondary: "#e2c07c", accent: "#b3261e", bg: "#0a0a0a", surface: "#151515", text: "#f6f1e6", muted: "#a39b88", light: "#ffffff", dark: "#050505", onprimary: "#0a0a0a" } },
 ];
 
 export const COLOR_NAMES: Record<string, string> = {

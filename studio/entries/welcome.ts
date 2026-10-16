@@ -45,10 +45,10 @@ if (wrap && video) {
   video.addEventListener("play", () => wrap.classList.add("is-playing"));
   video.addEventListener("ended", () => wrap.classList.remove("is-playing"));
   // si el archivo no existe o el formato no es compatible, se muestra una alternativa visual
-  const src = video.querySelector("source");
-  src?.addEventListener("error", showFallback);
+  const sources = video.querySelectorAll("source");
+  sources[sources.length - 1]?.addEventListener("error", showFallback);
   video.addEventListener("error", showFallback);
-  if (video.canPlayType("video/webm") === "") showFallback();
+  if (video.canPlayType("video/webm") === "" && video.canPlayType("video/mp4") === "") showFallback();
 }
 
 /* ---------- Galería de plantillas (módulo diferido) ---------- */

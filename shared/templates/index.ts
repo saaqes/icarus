@@ -65,7 +65,7 @@ const sectionHead = (eyebrow: string, title: string, sub: string, center = true)
 function minimalista(): Doc {
   const home = uid("pg"), contactId = uid("pg");
   const link = (id: string) => `page:${id}`;
-  return makeDoc("Lumen Studio", th({ primary: "#111827", secondary: "#374151", accent: "#2563eb", bg: "#ffffff", surface: "#f4f4f5", text: "#111827", muted: "#6b7280", light: "#ffffff", dark: "#0b0b0d" }, "Inter", "Inter"), [
+  return makeDoc("Lumen Studio", th({ primary: "#111827", secondary: "#374151", accent: "#2563eb", bg: "#ffffff", surface: "#f4f4f5", text: "#111827", muted: "#52525b", light: "#ffffff", dark: "#0b0b0d", onprimary: "#ffffff" }, "Inter", "Inter"), [
     {
       id: home, name: "Inicio", slug: "index", seo: { title: "Lumen Studio — diseño sin ruido", description: "Estudio de diseño minimalista: identidad, web y empaque para marcas que valoran la claridad." },
       sections: [
@@ -104,7 +104,7 @@ function minimalista(): Doc {
       id: contactId, name: "Contacto", slug: "contacto", seo: { title: "Contacto — Lumen Studio", description: "Cuéntanos tu proyecto." },
       sections: [
         navBar("Lumen", [{ label: "Inicio", href: link(home) }, { label: "Servicios", href: link(home) }, { label: "Contacto", href: link(contactId) }]),
-        { ...contact(), name: "Contacto" },
+        { ...contact(1), name: "Contacto" },
         footer("Lumen"),
       ],
     },
@@ -115,7 +115,7 @@ function minimalista(): Doc {
 function corporativa(): Doc {
   const home = uid("pg"), services = uid("pg"), contactId = uid("pg");
   const nav = () => navBar("Andina Consultores", [{ label: "Inicio", href: `page:${home}` }, { label: "Servicios", href: `page:${services}` }, { label: "Contacto", href: `page:${contactId}` }]);
-  const theme = th({ primary: "#1d4ed8", secondary: "#3b82f6", accent: "#f59e0b", bg: "#f8fafc", surface: "#ffffff", text: "#0f172a", muted: "#475569", light: "#ffffff", dark: "#0b1220" }, "Montserrat", "Lora");
+  const theme = th({ primary: "#1d4ed8", secondary: "#3b82f6", accent: "#b45309", bg: "#f8fafc", surface: "#ffffff", text: "#0f172a", muted: "#475569", light: "#ffffff", dark: "#0b1220", onprimary: "#ffffff" }, "Montserrat", "Lora");
   const card = (ic: string, t: string, d: string) => N.card({ name: t, s: { bg: "$surface", border: { w: 1, color: "#e2e8f0", style: "solid" } } }, [N.icon(ic, { size: 30 }), N.heading(t, 3), N.para(d, { s: { size: 15 } })]);
   return makeDoc("Andina Consultores", theme, [
     {
@@ -125,7 +125,7 @@ function corporativa(): Doc {
         N.section({
           name: "Hero", s: { padding: pad(130, 24, 120, 24), gap: 22, bg: "$dark", bgImage: { src: libSrc("ocean"), fit: "cover", pos: "center", overlay: "rgba(11,18,32,0.72)" } }, mobile: { padding: pad(72, 20) },
         }, [
-          N.eyebrow("Consultoría empresarial", { s: { color: "$accent" } }),
+          N.eyebrow("Consultoría empresarial", { s: { color: "#fbbf24" } }),
           N.heading("Estrategia que se convierte en resultados", 1, { s: { color: "$light", maxWidth: 780, size: 60 }, anim: anim("slide-up", { trigger: "load" }) }),
           N.para("Acompañamos a las empresas medianas en la definición, ejecución y medición de su crecimiento.", { s: { color: "rgba(255,255,255,0.82)", maxWidth: 580, size: 19 } }),
           N.row({ s: { gap: 12, wrap: true } }, [N.button("Agenda una reunión", { props: { href: `page:${contactId}` }, s: { bg: "$accent", color: "$dark" }, hover: { bg: "$light" } }), N.button("Nuestros servicios", { variant: "outline", props: { href: `page:${services}` }, s: { color: "$light", border: { w: 1, color: "rgba(255,255,255,0.5)", style: "solid" } } })]),
@@ -151,19 +151,19 @@ function corporativa(): Doc {
         N.section({ name: "Encabezado", s: { padding: pad(96, 24, 40, 24) }, mobile: { padding: pad(56, 20, 24, 20) } }, [N.eyebrow("Servicios"), N.heading("Soluciones a la medida de tu empresa", 1, { s: { size: 50 } })]),
         N.section({ name: "Detalle", s: { padding: pad(24, 24, 88, 24), gap: 20 } }, [
           ...[["chart", "Estrategia y planeación", "Definimos objetivos, indicadores y hoja de ruta a 12 y 36 meses."], ["briefcase", "Finanzas corporativas", "Modelos financieros, valoración y búsqueda de capital."], ["users", "Gestión del talento", "Estructura organizacional, compensación y cultura."], ["settings", "Mejora de procesos", "Mapeo, automatización y control de calidad."]].map(([ic, t, d]) =>
-            N.card({ name: t, s: { bg: "$surface", border: { w: 1, color: "#e2e8f0", style: "solid" } } }, [N.row({ s: { gap: 18, align: "start" }, mobile: { layout: "stack" } }, [N.icon(ic, { size: 34 }), N.box({ s: { gap: 6 } }, [N.heading(t, 3), N.para(d, { s: { size: 15 } })])])])),
+            N.card({ name: t, s: { bg: "$surface", border: { w: 1, color: "#e2e8f0", style: "solid" } } }, [N.row({ s: { gap: 18, align: "start" }, mobile: { layout: "stack" } }, [N.icon(ic, { size: 34 }), N.box({ s: { gap: 6 } }, [N.heading(t, 2, { s: { size: 24 } }), N.para(d, { s: { size: 15 } })])])])),
         ]),
         faq(),
         footer("Andina Consultores"),
       ],
     },
-    { id: contactId, name: "Contacto", slug: "contacto", sections: [nav(), contact(), footer("Andina Consultores")] },
+    { id: contactId, name: "Contacto", slug: "contacto", sections: [nav(), contact(1), footer("Andina Consultores")] },
   ]);
 }
 
 /* ============ 3. Tecnológica ============ */
 function tecnologica(): Doc {
-  const theme = th({ primary: "#7c3aed", secondary: "#22d3ee", accent: "#a855f7", bg: "#07060d", surface: "#12101c", text: "#f5f3ff", muted: "#a8a0c2", light: "#ffffff", dark: "#030208" }, "Space Grotesk", "Inter");
+  const theme = th({ primary: "#7c3aed", secondary: "#22d3ee", accent: "#a78bfa", bg: "#07060d", surface: "#12101c", text: "#f5f3ff", muted: "#a8a0c2", light: "#ffffff", dark: "#030208", onprimary: "#ffffff" }, "Space Grotesk", "Inter");
   const feat = (ic: string, t: string, d: string) => N.card({ name: t, s: { bg: "$surface", border: { w: 1, color: "rgba(124,58,237,0.28)", style: "solid" } }, hover: { border: { w: 1, color: "$secondary", style: "solid" } } }, [N.icon(ic, { size: 28, s: { color: "$secondary" } }), N.heading(t, 3), N.para(d, { s: { size: 15 } })]);
   return makeDoc("Nexo AI", theme, [{
     id: uid("pg"), name: "Inicio", slug: "index", seo: { title: "Nexo — automatiza tu flujo de trabajo con IA", description: "Plataforma de automatización con inteligencia artificial para equipos modernos." },
@@ -201,7 +201,7 @@ function tecnologica(): Doc {
 
 /* ============ 4. Elegante ============ */
 function elegante(): Doc {
-  const theme = th({ primary: "#c9a35a", secondary: "#e2c07c", accent: "#b3261e", bg: "#0a0a0a", surface: "#141414", text: "#f6f1e6", muted: "#a39b88", light: "#ffffff", dark: "#050505" }, "Cormorant Garamond", "Manrope");
+  const theme = th({ primary: "#c9a35a", secondary: "#e2c07c", accent: "#e2c07c", bg: "#0a0a0a", surface: "#141414", text: "#f6f1e6", muted: "#a39b88", light: "#ffffff", dark: "#050505", onprimary: "#0a0a0a" }, "Cormorant Garamond", "Manrope");
   return makeDoc("Maison Aurea", theme, [{
     id: uid("pg"), name: "Inicio", slug: "index", seo: { title: "Maison Aurea — joyería de autor", description: "Piezas únicas hechas a mano en oro y plata." },
     sections: [
@@ -219,7 +219,7 @@ function elegante(): Doc {
             N.box({ name: nm, s: { gap: 10 } }, [
               N.image(libSrc(im), nm, { s: { radius: 0, h: "auto", w: "fill" }, props: { ratio: 1 } }),
               N.text(nm, { s: { font: "$heading", size: 24, weight: 500, color: "$text" } }),
-              N.text(pr, { s: { size: 15, color: "$primary" } }),
+              N.text(pr, { s: { size: 15, color: "$accent" } }),
             ]))),
       ]),
       N.section({ name: "Atelier", attrs: { elId: "atelier" }, s: { padding: pad(96, 24), bg: "$surface" }, mobile: { padding: pad(56, 20) } }, [
@@ -237,7 +237,7 @@ function elegante(): Doc {
 
 /* ============ 5. Creativa (creador de contenido) ============ */
 function creativa(): Doc {
-  const theme = th({ primary: "#ff3d81", secondary: "#ffd23f", accent: "#3ddcff", bg: "#12082b", surface: "#1d1040", text: "#fff7ff", muted: "#c9b8e8", light: "#ffffff", dark: "#0a0418" }, "Unbounded", "DM Sans");
+  const theme = th({ primary: "#d61f69", secondary: "#ffd23f", accent: "#ff7aa8", bg: "#12082b", surface: "#1d1040", text: "#fff7ff", muted: "#c9b8e8", light: "#ffffff", dark: "#0a0418", onprimary: "#ffffff" }, "Unbounded", "DM Sans");
   return makeDoc("Mica Vlogs", theme, [{
     id: uid("pg"), name: "Inicio", slug: "index", seo: { title: "Mica — creadora de contenido", description: "Videos, colaboraciones y comunidad. Conoce a Mica y trabajemos juntos." },
     sections: [
@@ -258,7 +258,7 @@ function creativa(): Doc {
         N.grid({ s: { columns: 3, gap: 20 }, tablet: { columns: 2 }, mobile: { columns: 1 }, anim: anim("slide-up", { stagger: true }) },
           ["sunrise", "rose", "ocean"].map((im, i) => N.card({ name: `Video ${i + 1}`, s: { padding: pad(0), overflow: "hidden", gap: 0 } }, [
             N.image(libSrc(im), `Miniatura del video ${i + 1}`, { s: { radius: 0, h: "auto" }, props: { ratio: 1.78 } }),
-            N.box({ s: { padding: pad(18), gap: 6 } }, [N.heading(["24 horas en Lisboa", "Mi setup creativo 2026", "Cómo edito mis videos"][i], 4), N.text(["Viajes · 12:40", "Tecnología · 8:15", "Tutorial · 15:02"][i], { s: { size: 13, color: "$muted" } })]),
+            N.box({ s: { padding: pad(18), gap: 6 } }, [N.heading(["24 horas en Lisboa", "Mi setup creativo 2026", "Cómo edito mis videos"][i], 3, { s: { size: 18 } }), N.text(["Viajes · 12:40", "Tecnología · 8:15", "Tutorial · 15:02"][i], { s: { size: 13, color: "$muted" } })]),
           ]))),
       ]),
       N.section({ name: "Marcas", attrs: { elId: "marcas" }, s: { padding: pad(72, 24), bg: "$surface", align: "center", gap: 28 }, mobile: { padding: pad(48, 20) } }, [
@@ -274,7 +274,7 @@ function creativa(): Doc {
 
 /* ============ 6. E-commerce (tienda visual) ============ */
 function ecommerce(): Doc {
-  const theme = th({ primary: "#0f766e", secondary: "#14b8a6", accent: "#f97316", bg: "#fafaf9", surface: "#ffffff", text: "#1c1917", muted: "#78716c", light: "#ffffff", dark: "#0c0a09" }, "Poppins", "Poppins");
+  const theme = th({ primary: "#0f766e", secondary: "#14b8a6", accent: "#c2410c", bg: "#fafaf9", surface: "#ffffff", text: "#1c1917", muted: "#57534e", light: "#ffffff", dark: "#0c0a09", onprimary: "#ffffff" }, "Poppins", "Poppins");
   const products = [["product-1", "Esfera de cerámica", "$89.000", "Nuevo"], ["product-2", "Cubo organizador", "$64.000", ""], ["product-3", "Anillo decorativo", "$52.000", "-20%"], ["product-4", "Jarrón cilíndrico", "$118.000", ""], ["product-2", "Set de cubos", "$135.000", "Nuevo"], ["product-1", "Esfera mini", "$39.000", ""], ["product-4", "Jarrón alto", "$146.000", ""], ["product-3", "Anillo grande", "$76.000", "-15%"]];
   return makeDoc("Casa Norte", theme, [{
     id: uid("pg"), name: "Tienda", slug: "index", seo: { title: "Casa Norte — objetos para el hogar", description: "Decoración y objetos de diseño para tu casa. Envíos a todo el país." },
@@ -298,7 +298,7 @@ function ecommerce(): Doc {
           N.box({ name: nm, s: { gap: 10 } }, [
             N.image(libSrc(im), nm, { s: { radius: 16, h: "auto", bg: "$surface" }, props: { ratio: 1 } }),
             N.row({ s: { justify: "between", gap: 8, align: "start" } }, [N.text(nm, { s: { size: 15, weight: 500, color: "$text" } }), ...(tag ? [N.text(tag, { s: { size: 12, weight: 700, color: "$accent" } })] : [])]),
-            N.text(pr, { s: { size: 15, weight: 700, color: "$primary" } }),
+            N.text(pr, { s: { size: 15, weight: 700, color: "$accent" } }),
             N.button("Añadir al carrito", { variant: "outline", s: { padding: pad(10, 16), size: 13, alignSelf: "stretch" } }),
           ]))),
       ]),
@@ -318,8 +318,8 @@ function ecommerce(): Doc {
 
 /* ============ 7. Portafolio ============ */
 function portafolio(): Doc {
-  const theme = th({ primary: "#e11d48", secondary: "#fb7185", accent: "#0ea5e9", bg: "#fbf7f2", surface: "#f1eadf", text: "#1a1411", muted: "#6c5f55", light: "#ffffff", dark: "#120d0a" }, "Playfair Display", "Inter");
-  const work = (im: string, t: string, c: string) => N.box({ name: t, s: { gap: 12 }, anim: anim("slide-up") }, [N.image(libSrc(im), t, { s: { radius: 6, h: "auto", w: "fill" }, props: { ratio: 1.4 } }), N.row({ s: { justify: "between" } }, [N.heading(t, 3, { s: { size: 22 } }), N.text(c, { s: { size: 13, color: "$muted", transform: "uppercase", ls: 1.5 } })])]);
+  const theme = th({ primary: "#be123c", secondary: "#fb7185", accent: "#0369a1", bg: "#fbf7f2", surface: "#f1eadf", text: "#1a1411", muted: "#6c5f55", light: "#ffffff", dark: "#120d0a", onprimary: "#ffffff" }, "Playfair Display", "Inter");
+  const work = (im: string, t: string, c: string) => N.box({ name: t, s: { gap: 12 }, anim: anim("slide-up") }, [N.image(libSrc(im), t, { s: { radius: 6, h: "auto", w: "fill" }, props: { ratio: 1.4 } }), N.row({ s: { justify: "between" } }, [N.heading(t, 2, { s: { size: 22 } }), N.text(c, { s: { size: 13, color: "$muted", transform: "uppercase", ls: 1.5 } })])]);
   return makeDoc("Valeria Montes", theme, [{
     id: uid("pg"), name: "Portafolio", slug: "index", seo: { title: "Valeria Montes — diseñadora gráfica", description: "Portafolio de diseño gráfico, branding e ilustración." },
     sections: [
@@ -347,7 +347,7 @@ function portafolio(): Doc {
 
 /* ============ 8. Agencia digital ============ */
 function agencia(): Doc {
-  const theme = th({ primary: "#ff5a1f", secondary: "#ffb703", accent: "#8338ec", bg: "#0e0e10", surface: "#1a1a1e", text: "#f5f5f4", muted: "#a1a1aa", light: "#ffffff", dark: "#050506" }, "Syne", "DM Sans");
+  const theme = th({ primary: "#ff5a1f", secondary: "#ffb703", accent: "#ff8a5c", bg: "#0e0e10", surface: "#1a1a1e", text: "#f5f5f4", muted: "#a1a1aa", light: "#ffffff", dark: "#050506", onprimary: "#0e0e10" }, "Syne", "DM Sans");
   return makeDoc("Pulso Agency", theme, [{
     id: uid("pg"), name: "Inicio", slug: "index", seo: { title: "Pulso — agencia de marketing digital", description: "Estrategia, contenido y performance para marcas que quieren crecer." },
     sections: [
@@ -368,7 +368,7 @@ function agencia(): Doc {
       stats(),
       N.section({ name: "Casos", attrs: { elId: "casos" }, s: { padding: pad(96, 24), gap: 36 }, mobile: { padding: pad(56, 20) } }, [
         sectionHead("Casos", "Resultados que se miden", "", false),
-        N.grid({ s: { columns: 2, gap: 24 }, mobile: { columns: 1 } }, [["ember", "Café Brasa", "+240% en ventas online"], ["ocean", "Nauta Viajes", "3× más reservas directas"]].map(([im, t, r]) => N.box({ name: t, s: { gap: 12 } }, [N.image(libSrc(im), t, { s: { h: "auto", radius: 20 }, props: { ratio: 1.6 } }), N.heading(t, 3), N.text(r, { s: { color: "$primary", weight: 700 } })]))),
+        N.grid({ s: { columns: 2, gap: 24 }, mobile: { columns: 1 } }, [["ember", "Café Brasa", "+240% en ventas online"], ["ocean", "Nauta Viajes", "3× más reservas directas"]].map(([im, t, r]) => N.box({ name: t, s: { gap: 12 } }, [N.image(libSrc(im), t, { s: { h: "auto", radius: 20 }, props: { ratio: 1.6 } }), N.heading(t, 3), N.text(r, { s: { color: "$accent", weight: 700 } })]))),
       ]),
       { ...testimonials(), name: "Clientes" },
       { ...contact(), name: "Contacto" },
@@ -379,7 +379,7 @@ function agencia(): Doc {
 
 /* ============ 9. Landing de ventas (producto digital) ============ */
 function ventas(): Doc {
-  const theme = th({ primary: "#16a34a", secondary: "#22c55e", accent: "#eab308", bg: "#ffffff", surface: "#f0fdf4", text: "#052e16", muted: "#4b5d52", light: "#ffffff", dark: "#052e16" }, "Sora", "DM Sans");
+  const theme = th({ primary: "#15803d", secondary: "#16a34a", accent: "#a16207", bg: "#ffffff", surface: "#f0fdf4", text: "#052e16", muted: "#4b5d52", light: "#ffffff", dark: "#052e16", onprimary: "#ffffff" }, "Sora", "DM Sans");
   return makeDoc("Curso Impulsa", theme, [{
     id: uid("pg"), name: "Oferta", slug: "index", seo: { title: "Impulsa — curso de marketing para emprendedores", description: "Aprende a conseguir tus primeros 100 clientes con un método paso a paso." },
     sections: [
@@ -415,10 +415,10 @@ function ventas(): Doc {
 
 /* ============ 10. Editorial ============ */
 function editorial(): Doc {
-  const theme = th({ primary: "#9a3412", secondary: "#c2410c", accent: "#1d4ed8", bg: "#fffdf8", surface: "#f5efe3", text: "#1c1917", muted: "#78716c", light: "#ffffff", dark: "#1c1917" }, "Playfair Display", "Lora");
+  const theme = th({ primary: "#9a3412", secondary: "#c2410c", accent: "#1d4ed8", bg: "#fffdf8", surface: "#f5efe3", text: "#1c1917", muted: "#5f5750", light: "#ffffff", dark: "#1c1917", onprimary: "#ffffff" }, "Playfair Display", "Lora");
   const article = (im: string, cat: string, t: string, ex: string, big = false) => N.box({ name: t, s: { gap: 12 } }, [
     N.image(libSrc(im), t, { s: { radius: 0, h: "auto" }, props: { ratio: big ? 1.7 : 1.5 } }),
-    N.text(cat, { s: { size: 12, weight: 700, color: "$primary", transform: "uppercase", ls: 2 } }),
+    N.text(cat, { s: { size: 12, weight: 700, color: "$accent", transform: "uppercase", ls: 2 } }),
     N.heading(t, big ? 2 : 3, { s: { weight: 700 } }),
     N.para(ex, { s: { size: 16 } }),
   ]);
@@ -428,15 +428,15 @@ function editorial(): Doc {
       N.section({ name: "Cabecera", props: { tag: "header" }, s: { padding: pad(28, 24, 18, 24), gap: 14, align: "center" } }, [
         N.text("LA GACETA", { s: { font: "$heading", size: 68, weight: 800, ls: 4, textAlign: "center", color: "$text" }, mobile: { size: 38 } }),
         N.divider({ s: { bg: "$text", opacity: 1, h: 2 } }),
-        N.row({ props: { tag: "nav" }, s: { gap: 28, justify: "center", wrap: true } }, ["Cultura", "Arquitectura", "Diseño", "Entrevistas", "Ensayo"].map((t) => N.text(t, { props: { href: "#" }, s: { size: 13, weight: 700, transform: "uppercase", ls: 2, color: "$text" }, hover: { color: "$primary" } }))),
+        N.row({ props: { tag: "nav" }, s: { gap: 28, justify: "center", wrap: true } }, ["Cultura", "Arquitectura", "Diseño", "Entrevistas", "Ensayo"].map((t) => N.text(t, { props: { href: "#" }, s: { size: 13, weight: 700, transform: "uppercase", ls: 2, color: "$text" }, hover: { color: "$accent" } }))),
         N.divider({ s: { bg: "$text", opacity: 0.4 } }),
       ]),
       N.section({ name: "Portada principal", s: { padding: pad(32, 24, 56, 24) }, mobile: { padding: pad(16, 20, 40, 20) } }, [
         N.row({ s: { gap: 48, align: "start" }, tablet: { layout: "stack", gap: 28 } }, [
-          N.box({ s: { w: "fill", gap: 14 }, anim: anim("fade", { trigger: "load" }) }, [N.image(libSrc("circuit"), "Fotografía de portada", { s: { radius: 0, h: "auto" }, props: { ratio: 1.55 } }), N.text("Reportaje de portada", { s: { size: 12, weight: 700, color: "$primary", transform: "uppercase", ls: 2 } }), N.heading("La ciudad que se reinventa bajo la lluvia", 1, { s: { size: 52, lh: 1.08 } }), N.para("Un recorrido por los barrios que están cambiando la forma de vivir, trabajar y soñar en la capital.", { s: { size: 18 } })]),
+          N.box({ s: { w: "fill", gap: 14 }, anim: anim("fade", { trigger: "load" }) }, [N.image(libSrc("circuit"), "Fotografía de portada", { s: { radius: 0, h: "auto" }, props: { ratio: 1.55 } }), N.text("Reportaje de portada", { s: { size: 12, weight: 700, color: "$accent", transform: "uppercase", ls: 2 } }), N.heading("La ciudad que se reinventa bajo la lluvia", 1, { s: { size: 52, lh: 1.08 } }), N.para("Un recorrido por los barrios que están cambiando la forma de vivir, trabajar y soñar en la capital.", { s: { size: 18 } })]),
           N.box({ s: { w: 360, gap: 22, padding: pad(0, 0, 0, 28) }, tablet: { w: "fill", padding: pad(0) } }, [
-            N.heading("Más leídos", 3, { s: { size: 20, transform: "uppercase", ls: 2 } }),
-            ...["Diez casas que cambiaron la arquitectura", "Entrevista con la diseñadora del año", "El regreso de la tipografía de autor", "Cuando el museo sale a la calle"].map((t, i) => N.row({ s: { gap: 14, align: "start" } }, [N.text(String(i + 1), { s: { font: "$heading", size: 34, weight: 800, color: "$primary" } }), N.heading(t, 4, { s: { size: 17 } })])),
+            N.heading("Más leídos", 2, { s: { size: 20, transform: "uppercase", ls: 2 } }),
+            ...["Diez casas que cambiaron la arquitectura", "Entrevista con la diseñadora del año", "El regreso de la tipografía de autor", "Cuando el museo sale a la calle"].map((t, i) => N.row({ s: { gap: 14, align: "start" } }, [N.text(String(i + 1), { s: { font: "$heading", size: 34, weight: 800, color: "$accent" } }), N.heading(t, 3, { s: { size: 17 } })])),
           ]),
         ]),
       ]),
