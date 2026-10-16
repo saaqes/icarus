@@ -193,7 +193,7 @@ export function sanitizeProps(type: NodeType, p: unknown): Record<string, any> {
     case "root":
     case "section":
     case "container":
-      return { tag: oneOf(r.tag, BOX_TAGS, type === "section" ? "section" : "div") };
+      return { tag: oneOf(r.tag, BOX_TAGS, type === "section" ? "section" : "div"), ...(r.group === true && type === "container" ? { group: true } : {}) };
     default:
       return {};
   }

@@ -75,7 +75,7 @@ function pageFile(doc: Doc, page: Page): string {
   return page.id === doc.settings.homePageId ? "index.html" : `${page.slug}.html`;
 }
 
-function collectFonts(doc: Doc): Map<string, Set<number>> {
+export function collectFonts(doc: Doc): Map<string, Set<number>> {
   const used = new Map<string, Set<number>>();
   const add = (family: string, w: number) => {
     if (!family) return;
