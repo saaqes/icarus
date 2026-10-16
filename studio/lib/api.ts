@@ -22,6 +22,9 @@ export async function api<T = any>(method: string, path: string, body?: unknown,
   const type = res.headers.get("content-type") || "";
   if (type.includes("json")) data = await res.json().catch(() => null);
   if (!res.ok) throw new ApiError(res.status, data?.error || `Error ${res.status}`, data?.code || "error", data ?? {});
+  if (data === null && res.status !== 204 && type && !/octet|zip|image|video|audio/.test(type)) {
+    throw new ApiError(res.status, "El servidor no respondió como API. Comprueba que el servicio Node esté desplegado y DATABASE_URL configurada.", "bad_response");
+  }
   return data as T;
 }
 

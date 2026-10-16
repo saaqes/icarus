@@ -53,7 +53,7 @@ async function route(): Promise<void> {
 async function boot(): Promise<void> {
   const [config, me] = await Promise.all([Api.config().catch(() => null), Api.me().catch(() => ({ user: null }))]);
   session.config = config;
-  session.user = me.user;
+  session.user = me?.user ?? null;
   window.addEventListener("hashchange", () => void route());
   window.addEventListener("unhandledrejection", (e) => { console.error(e.reason); });
   if (!config) toast("No se pudo contactar con el servidor. Comprueba tu conexión.", "error", 6000);
