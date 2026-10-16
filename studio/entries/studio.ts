@@ -9,7 +9,7 @@ type View = (host: HTMLElement, args: string[]) => Promise<() => void> | (() => 
 const routes: { re: RegExp; auth: "none" | "user" | "admin"; load: () => Promise<View> }[] = [
   { re: /^#\/login$/, auth: "none", load: async () => (host) => mountAuth(host, () => { location.hash = sessionStorage.getItem("studio.next") || "#/projects"; sessionStorage.removeItem("studio.next"); }) },
   { re: /^#\/projects$/, auth: "user", load: async () => (await import("../app/projects")).mountProjects },
-  { re: /^#\/new(?:\/([\w-]+))?$/, auth: "user", load: async () => (await import("../app/wizard")).mountWizard },
+  { re: /^#\/new(?:\/([\w-]+))?(?:\/(info))?$/, auth: "user", load: async () => (await import("../app/wizard")).mountWizard },
   { re: /^#\/edit\/([\w-]+)$/, auth: "user", load: async () => (await import("../app/edit-route")).mountEditRoute },
   { re: /^#\/finish\/([\w-]+)$/, auth: "user", load: async () => (await import("../app/finish")).mountFinish },
   { re: /^#\/admin(?:\/([\w-]+))?$/, auth: "admin", load: async () => (await import("../app/admin")).mountAdmin },

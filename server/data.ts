@@ -222,7 +222,7 @@ export async function saveProject(db: Db, userId: string, id: string, doc: Doc, 
 
 export interface MetaPatch {
   name?: string; siteName?: string; description?: string; pageType?: string; category?: string; contact?: object; brand?: object;
-  folderId?: string | null; status?: ProjectStatus; archived?: boolean;
+  folderId?: string | null; status?: ProjectStatus; archived?: boolean; templateId?: string | null;
 }
 
 export async function updateProjectMeta(db: Db, userId: string, id: string, p: MetaPatch): Promise<ProjectMeta> {
@@ -235,10 +235,11 @@ export async function updateProjectMeta(db: Db, userId: string, id: string, p: M
     contact: p.contact ? JSON.stringify(p.contact) : row.contact, brand: p.brand ? JSON.stringify(p.brand) : row.brand,
     folder_id: p.folderId === undefined ? row.folder_id : p.folderId, status: p.status ?? row.status,
     archived: p.archived === undefined ? row.archived : p.archived ? 1 : 0,
+    template_id: p.templateId === undefined ? row.template_id : p.templateId,
   };
   await db.run(
-    `UPDATE projects SET name=?, site_name=?, description=?, page_type=?, category=?, contact=?, brand=?, folder_id=?, status=?, archived=?, updated_at=? WHERE id=?`,
-    [m.name, m.site_name, m.description, m.page_type, m.category, m.contact, m.brand, m.folder_id, m.status, m.archived, nowIso(), id]);
+    `UPDATE projects SET name=?, site_name=?, description=?, page_type=?, category=?, contact=?, brand=?, folder_id=?, status=?, archived=?, template_id=?, updated_at=? WHERE id=?`,
+    [m.name, m.site_name, m.description, m.page_type, m.category, m.contact, m.brand, m.folder_id, m.status, m.archived, m.template_id, nowIso(), id]);
   return projectDto((await getProjectRow(db, userId, id))!);
 }
 

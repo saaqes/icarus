@@ -5,7 +5,6 @@ import { buildSite, collectLocalAssets } from "../shared/export/render";
 import { sniff } from "./storage";
 import { checkAccessibility } from "../shared/export/a11y";
 import { slugify } from "../shared/model/doc";
-import { resolveFontFamily } from "../shared/model/style";
 import { STATIC_IMAGE_PREFIXES } from "../shared/library";
 import type { Doc } from "../shared/model/types";
 import { createZip, listZip, ZipEntry } from "./zip";
@@ -73,24 +72,7 @@ export function makeAssetLoader(opts: { distDir: string; uploaded: (id: string) 
   };
 }
 
-/** Resumen legible de las características del diseño (para la solicitud y el mensaje de WhatsApp). */
-export function describeDoc(doc: Doc): string[] {
-  const nodes = Object.values(doc.nodes).filter((n) => !n.hidden);
-  const count = (t: string) => nodes.filter((n) => n.type === t).length;
-  const out: string[] = [];
-  out.push(`${doc.pages.length} página${doc.pages.length === 1 ? "" : "s"}`);
-  out.push(`${count("section")} secciones`);
-  if (count("image")) out.push(`${count("image")} imágenes`);
-  if (count("video")) out.push(`${count("video")} vídeos`);
-  if (count("form")) out.push("formulario de contacto");
-  if (doc.settings.animations && nodes.some((n) => n.anim && n.anim.type !== "none")) out.push("animaciones");
-  out.push("diseño responsive (escritorio, tableta y móvil)");
-  const fonts = new Set<string>();
-  fonts.add(doc.theme.fonts.heading); fonts.add(doc.theme.fonts.body);
-  for (const n of nodes) if (n.s.base.font) fonts.add(resolveFontFamily(n.s.base.font, doc.theme));
-  out.push(`tipografías: ${[...fonts].filter(Boolean).join(", ")}`);
-  return out;
-}
+export { describeDoc } from "../shared/export/summary";
 
 export function accessibilityCounts(doc: Doc): { errors: number; warnings: number } {
   const i = checkAccessibility(doc);

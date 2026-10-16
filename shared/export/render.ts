@@ -25,6 +25,8 @@ export interface BuiltSite {
 export interface BuildOptions {
   /** Nombre de archivo de salida para recursos locales (el servidor lo deduce del tipo real del archivo). */
   assetName?: (src: string) => string | undefined;
+  /** Sin etiquetas <script> (miniaturas dentro de un iframe sin permisos de scripts). */
+  noScript?: boolean;
   /** `preview`: CSS en línea, recursos sin reescribir y enlaces entre páginas gestionados por el editor. */
   mode: "export" | "preview";
   projectName?: string;
@@ -287,7 +289,7 @@ function buildCss(doc: Doc, assets: AssetMap, animations: boolean): string {
 
 /* ---------- Página y sitio ---------- */
 
-function head(doc: Doc, page: Page, assets: AssetMap, mode: BuildOptions["mode"], css: string, fontsUrl: string | null): string {
+function head(doc: Doc, page: Page, assets: AssetMap, mode: BuildOptions["mode"], css: string, fontsUrl: string | null, noScript = false): string {
   const s = doc.settings;
   const isHome = page.id === s.homePageId;
   const title = page.seo?.title || (isHome ? s.title || s.siteName : `${page.name} — ${s.siteName}`);
@@ -305,7 +307,7 @@ function head(doc: Doc, page: Page, assets: AssetMap, mode: BuildOptions["mode"]
     out.push(`<link rel="icon" href="${esc(ref)}">`);
   } else out.push(`<link rel="icon" href="data:,">`);
   if (fontsUrl) out.push(`<link rel="preconnect" href="https://fonts.googleapis.com">`, `<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>`, `<link rel="stylesheet" href="${esc(fontsUrl)}">`);
-  if (mode === "preview") out.push(`<style>${css.replace(/<\/style/gi, "<\\/style")}</style>`, `<script src="/forja/studio/assets/js/site.js"></script>`);
+  if (mode === "preview") { out.push(`<style>${css.replace(/<\/style/gi, "<\\/style")}</style>`); if (!noScript) out.push(`<script src="/forja/studio/assets/js/site.js"></script>`); }
   else out.push(`<link rel="stylesheet" href="assets/styles.css">`, `<script src="assets/site.js"></script>`);
   return out.join("\n");
 }
@@ -320,7 +322,7 @@ export function buildSite(doc: Doc, opts: BuildOptions): BuiltSite {
   const pages: BuiltPage[] = [];
   for (const page of doc.pages) {
     const body = renderNode(ctx, page.rootId);
-    const html = `<!doctype html>\n<html lang="${esc(doc.settings.lang)}">\n<head>\n${head(doc, page, assets, opts.mode, css, fontsUrl)}\n</head>\n<body>\n<a class="ic-skip" href="#${esc(doc.nodes[page.rootId]?.attrs?.elId || "ic-main")}">Saltar al contenido</a>\n${body}\n</body>\n</html>\n`;
+    const html = `<!doctype html>\n<html lang="${esc(doc.settings.lang)}">\n<head>\n${head(doc, page, assets, opts.mode, css, fontsUrl, opts.noScript)}\n</head>\n<body>\n<a class="ic-skip" href="#${esc(doc.nodes[page.rootId]?.attrs?.elId || "ic-main")}">Saltar al contenido</a>\n${body}\n</body>\n</html>\n`;
     pages.push({ page, file: pageFile(doc, page), html });
   }
   const files: ExportFile[] = [];

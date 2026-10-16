@@ -220,6 +220,7 @@ export function createApi(deps: AppDeps) {
       patch.status = b.status as ProjectStatus;
     }
     if ("archived" in b) patch.archived = b.archived === true;
+    if ("templateId" in b) patch.templateId = typeof b.templateId === "string" ? b.templateId.slice(0, 40) : null;
     sendJson(res, 200, { project: await D.updateProjectMeta(db, user!.id, params[0], patch) });
   });
 

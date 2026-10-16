@@ -135,11 +135,12 @@ export class CanvasView {
       ent.node = node; ent.parentNode = parentNode; ent.key = key;
     }
     if (node.children.length || ent.el.firstElementChild?.hasAttribute("data-nid")) {
+      // primero se dibujan los hijos (pueden moverse entre contenedores) y después se ordena este nivel
+      const kids = node.children.map((cid) => this.renderNode(doc, cid, o, seen));
       let ref: ChildNode | null = ent.el.firstChild;
-      for (const cid of node.children) {
-        const childEl = this.renderNode(doc, cid, o, seen);
-        if (childEl === ref) ref = ref.nextSibling;
-        else ent.el.insertBefore(childEl, ref);
+      for (const k of kids) {
+        if (k === ref) ref = ref.nextSibling;
+        else ent.el.insertBefore(k, ref);
       }
       while (ref) { const next = ref.nextSibling; ref.remove(); ref = next; }
     }

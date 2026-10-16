@@ -243,11 +243,11 @@ function creativa(): Doc {
     sections: [
       navBar("mica!", [{ label: "Contenido", href: "#contenido" }, { label: "Marcas", href: "#marcas" }, { label: "Contacto", href: "#contacto" }]),
       N.section({ name: "Hero libre", s: { padding: pad(0), maxWidth: 1200 }, }, [
-        N.free({ name: "Composición libre", s: { minHeight: 560 }, tablet: { layout: "stack", padding: pad(48, 24), gap: 20 } }, [
-          N.shape("ellipse", { name: "Círculo rosa", s: { x: 640, y: 40, w: 420, h: 420, bg: { kind: "linear", angle: 135, stops: [{ c: "$primary", p: 0 }, { c: "$secondary", p: 100 }] } }, anim: anim("scale", { trigger: "load" }) }),
-          N.image(libSrc("avatar-4"), "Retrato de Mica", { name: "Retrato", s: { x: 700, y: 70, w: 320, h: 320, radius: 999 }, props: { ratio: 1 }, anim: anim("zoom-out", { trigger: "load", delay: 200 }) }),
-          N.heading("Hola, soy Mica.", 1, { s: { x: 60, y: 110, w: 620, size: 72, weight: 800 }, tablet: { size: 52 }, mobile: { size: 40 }, anim: anim("slide-right", { trigger: "load" }) }),
-          N.para("Creo videos sobre viajes, tecnología y vida creativa para una comunidad de 250 mil personas.", { s: { x: 60, y: 300, w: 520, size: 20, color: "$text" }, anim: anim("slide-up", { trigger: "load", delay: 160 }) }),
+        N.free({ name: "Composición libre", s: { minHeight: 560 }, tablet: { layout: "stack", padding: pad(40, 24), gap: 20, minHeight: 0, align: "stretch" } }, [
+          N.shape("ellipse", { name: "Círculo rosa", s: { x: 640, y: 40, w: 420, h: 420, bg: { kind: "linear", angle: 135, stops: [{ c: "$primary", p: 0 }, { c: "$secondary", p: 100 }] } }, tablet: { hide: true }, anim: anim("scale", { trigger: "load" }) }),
+          N.image(libSrc("avatar-4"), "Retrato de Mica", { name: "Retrato", s: { x: 700, y: 70, w: 320, h: 320, radius: 999 }, tablet: { w: 240, h: 240, alignSelf: "center" }, props: { ratio: 1 }, anim: anim("zoom-out", { trigger: "load", delay: 200 }) }),
+          N.heading("Hola, soy Mica.", 1, { s: { x: 60, y: 110, w: 620, size: 72, weight: 800 }, tablet: { size: 52, w: "fill" }, mobile: { size: 40 }, anim: anim("slide-right", { trigger: "load" }) }),
+          N.para("Creo videos sobre viajes, tecnología y vida creativa para una comunidad de 250 mil personas.", { s: { x: 60, y: 300, w: 520, size: 20, color: "$text" }, tablet: { w: "fill" }, anim: anim("slide-up", { trigger: "load", delay: 160 }) }),
           N.button("Ver mi canal", { s: { x: 60, y: 420, w: 190, h: 54, padding: pad(14, 24), bg: "$secondary", color: "$dark" }, hover: { bg: "$accent" } }),
           N.button("Colaboremos", { variant: "outline", s: { x: 270, y: 420, w: 190, h: 54, padding: pad(14, 24) } }),
         ]),

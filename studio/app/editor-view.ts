@@ -232,6 +232,15 @@ export function mountEditor(host: HTMLElement, opts: EditorViewOptions): () => v
     el.animate(frames[a.type] ?? frames.fade, { duration: a.duration, delay: a.delay, easing: "cubic-bezier(.2,.7,.1,1)", fill: "backwards" });
   }
 
+  /* ---------- Variables del tema (para muestras de color y tipografías de los paneles) ---------- */
+  const syncThemeVars = (doc: Doc) => {
+    for (const [k, v] of Object.entries(doc.theme.colors)) root.style.setProperty(`--c-${k.replace(/[^a-z0-9_-]/gi, "")}`, v);
+    root.style.setProperty("--f-heading", `"${doc.theme.fonts.heading}", sans-serif`);
+    root.style.setProperty("--f-body", `"${doc.theme.fonts.body}", sans-serif`);
+  };
+  syncThemeVars(ed.doc);
+  disposers.push(ed.store.subscribe((s, p) => { if (s.doc.theme !== p.doc.theme) syncThemeVars(s.doc); }));
+
   /* ---------- Reacciones al estado ---------- */
   const applyState = (s: EditorState, prev?: EditorState) => {
     renderTop(s);
