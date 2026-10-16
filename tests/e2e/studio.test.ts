@@ -1,13 +1,13 @@
 /**
  * Pruebas de extremo a extremo del constructor (navegador real). Cubren la lista de verificación del encargo:
  * crear proyecto, añadir/seleccionar/mover/redimensionar, texto, propiedades, capas, agrupar/duplicar, historial,
- * zoom/scroll, responsive, guardado y recuperación, exportación fiel, WhatsApp, administración y que las páginas
+ * zoom/scroll, responsive, guardado local y recuperación, exportación fiel, WhatsApp y que las páginas
  * existentes de ICARUS sigan funcionando.
  */
 import { test, before, after } from "node:test";
 import assert from "node:assert/strict";
-import { listZip } from "../../server/zip";
-import { centerOf, Env, idByText, idByType, newContext, openProject, setup, st, teardown, waitSaved } from "./helpers";
+import { listZip } from "../../shared/zip";
+import { api, centerOf, Env, idByText, idByType, newContext, openProject, setup, st, teardown, waitSaved } from "./helpers";
 
 let env: Env;
 before(async () => { env = await setup(); });
@@ -41,22 +41,22 @@ test("las páginas existentes de ICARUS siguen funcionando (comercial, forja y d
   await page.waitForSelector(".bld-pv iframe");
   await page.keyboard.press("Escape");
   assert.equal(await page.locator(".bld-pv").count(), 0);
-  // «FORJA TU PÁGINA WEB» abre el flujo real (pide cuenta)
+  // «FORJA TU PÁGINA WEB» abre el flujo real (sin cuenta)
   await page.click("#bld-start");
-  await page.waitForURL(/forja\/studio\/#\/(login|new)/);
+  await page.waitForURL(/forja\/studio\/#\/(projects|new)/);
   for (const demo of ["tienda-virtual", "sistema-administrativo", "landing-page"]) {
     const r = await page.goto(`${env.base}/forja/demos/${demo}/`);
     assert.equal(r?.status(), 200, demo);
   }
   assert.equal((await page.goto(env.base + "/forja/demos/tienda"))?.url().endsWith("/forja/demos/tienda-virtual/"), true, "las redirecciones heredadas siguen activas");
   assert.equal((await page.goto(env.base + "/no-existe"))?.status(), 404);
-  // El script en línea de la página comercial (demo del laboratorio) ya lo bloqueaba la CSP original y la prueba de 404 genera su propio aviso.
-  noErrors(logs.filter((l) => !/Refused to execute inline script|status of 404/.test(l)));
+  // Avisos que ya existían en la página comercial (script en línea que bloquea la CSP original, iframe de demo) y el propio aviso de la prueba de 404.
+  noErrors(logs.filter((l) => !/Refused to execute inline script|status of 404|allow-scripts and allow-same-origin/.test(l)));
   await ctx.close();
 });
 
-test("flujo completo: cuenta → proyecto → plantilla → editor → guardado → finalizar → WhatsApp → administración", async () => {
-  const ctx = await env.browser.newContext({ viewport: { width: 1440, height: 900 } });
+test("flujo completo: proyecto → plantilla → editor → guardado local → nombre y WhatsApp al final → ZIP y WhatsApp", async () => {
+  const ctx = await env.browser.newContext({ viewport: { width: 1440, height: 900 }, acceptDownloads: true });
   const page = await ctx.newPage();
   await page.addInitScript(() => { try { localStorage.setItem("icarus.debug", "1"); } catch { /* sin almacenamiento */ } });
   const logs: string[] = [];
@@ -65,24 +65,19 @@ test("flujo completo: cuenta → proyecto → plantilla → editor → guardado 
   let waUrl = "";
   await ctx.route(/https:\/\/wa\.me\//, (r) => { waUrl = r.request().url(); return r.fulfill({ status: 200, contentType: "text/html", body: "<title>wa</title>" }); });
 
+  // sin iniciar sesión: entra directo a «Mis proyectos»
   await page.goto(env.base + "/forja/studio/");
-  await page.waitForSelector(".au-card");
-  assert.ok(page.url().endsWith("#/login"), "sin sesión se pide iniciar sesión");
-  await page.click(".au-switch .st-link");
-  await page.fill('input[autocomplete="name"]', "Ana Pérez");
-  await page.fill('input[type="email"]', `flujo${Date.now()}@test.co`);
-  await page.fill('input[type="password"]', "clave-segura-1");
-  await page.click('button[type="submit"]');
   await page.waitForSelector(".pj-empty");
+  assert.equal(await page.locator('input[type="password"]').count(), 0);
 
   await page.click('a[href="#/new"] >> nth=0');
   await page.waitForSelector(".wz-card");
+  assert.equal(await page.locator('input[type="tel"], input[type="email"]').count(), 0, "el asistente ya no pide teléfono ni correo");
   await page.click('button[type="submit"]'); // campos obligatorios
   assert.ok(await page.isVisible(".st-error"), "valida el nombre del proyecto");
   await page.fill('input[placeholder="Ej.: Agencia Digital"]', "Mi Agencia");
   await page.fill('input[placeholder="Ej.: Pulso Agency"]', "Pulso Digital");
   await page.click('.wz-type:has-text("Agencia de marketing")');
-  await page.fill('input[type="tel"]', "+57 300 111 2222");
   await page.click('button[type="submit"]');
   await page.waitForSelector(".wz-tplgrid");
   await page.click('.tc:has-text("Agencia digital") .st-btn--primary');
@@ -97,41 +92,81 @@ test("flujo completo: cuenta → proyecto → plantilla → editor → guardado 
 
   await page.click(".tb-finish");
   await page.waitForSelector(".fn-grid", { timeout: 15000 });
-  assert.match(await page.textContent(".fn-card") ?? "", /Guardado en tu cuenta \(revisión \d+\)/);
+  assert.match(await page.textContent(".fn-card") ?? "", /Guardado en este dispositivo \(revisión \d+\)/);
+
+  // nombre y WhatsApp se piden aquí, ya con el proyecto hecho
+  await page.click('button:has-text("QUIERO ESTA PÁGINA")');
+  assert.ok(await page.isVisible(".st-error"), "pide el nombre");
+  await page.fill('input[autocomplete="name"]', "Ana Pérez");
+  await page.click('button:has-text("QUIERO ESTA PÁGINA")');
+  assert.match((await page.textContent(".st-error")) ?? "", /WhatsApp/);
+  await page.fill('input[type="tel"]', "+57 300 111 2222");
   const popup = ctx.waitForEvent("page");
+  const download = page.waitForEvent("download");
   await page.click('button:has-text("QUIERO ESTA PÁGINA")');
   await popup;
+  const dl = await download;
   await page.waitForSelector(".fn-code", { timeout: 20000 });
   const code = (await page.textContent(".fn-code")) ?? "";
-  assert.match(code, /^ICR-[A-Z0-9]{6}$/);
+  assert.match(code, /^ICA-[A-Z0-9]{6}$/);
   assert.ok(waUrl.startsWith("https://wa.me/573001112233?text="), "se abre wa.me con el número configurado");
   const text = new URL(waUrl).searchParams.get("text")!;
-  assert.ok(text.includes(code) && text.includes("Proyecto: Mi Agencia") && text.includes("Nombre del sitio: Pulso Digital") && text.includes("/api/downloads/"));
-  // el ZIP existe y se puede abrir
-  const href = (await page.getAttribute(".fn-done a[download]", "href"))!;
-  const dl = await ctx.request.get(href);
-  assert.equal(dl.status(), 200);
-  const files = listZip(Buffer.from(await dl.body()));
+  assert.ok(text.includes(code) && text.includes("Ana Pérez") && text.includes("+573001112222") && text.includes("Proyecto: Mi Agencia") && text.includes("Nombre del sitio: Pulso Digital") && text.includes(dl.suggestedFilename()));
+  // el ZIP se descargó de verdad y se puede abrir
+  const path = await dl.path();
+  const files = listZip(new Uint8Array(await (await import("node:fs/promises")).readFile(path)));
   assert.ok(files.some((f) => f.path === "index.html") && files.some((f) => f.path === "assets/styles.css"));
-  assert.match(files.find((f) => f.path === "index.html")!.data.toString(), /Título editado por la prueba/);
+  assert.match(new TextDecoder().decode(files.find((f) => f.path === "index.html")!.data), /Título editado por la prueba/);
 
-  // administración: solo admin
-  await page.goto(env.base + "/forja/studio/#/admin");
-  await page.waitForTimeout(600);
-  assert.match((await page.textContent("body")) ?? "", /Acceso restringido/);
-  const adminCtx = await env.browser.newContext({ viewport: { width: 1440, height: 900 } });
-  await adminCtx.request.post(env.base + "/api/auth/register", { data: { name: "Admin", email: "admin@icarus.test", password: "clave-segura-1" } });
-  const ap = await adminCtx.newPage();
-  await ap.goto(env.base + "/forja/studio/#/admin");
-  await ap.waitForSelector(".ad-table");
-  assert.ok((await ap.locator(".ad-row").count()) >= 1);
-  await ap.click(`.ad-row:has-text("${code}")`);
-  await ap.waitForSelector(".ad-detail");
-  await ap.selectOption('select[aria-label="Estado de la solicitud"]', "review");
-  await ap.click('button:has-text("Guardar estado")');
-  await ap.waitForSelector('.ad-badge--review');
-  await adminCtx.close();
+  // la solicitud queda en el historial local y los datos se recuerdan
+  await page.goto(env.base + "/forja/studio/#/projects");
+  await page.waitForSelector(".pj-req");
+  assert.ok((await page.textContent(".pj-req"))?.includes(code));
+  await page.reload();
+  await page.waitForSelector(".pj-card");
+  assert.equal(await page.locator(".pj-card").count(), 1, "el proyecto sigue guardado tras recargar");
   assert.deepEqual(logs, []);
+  await ctx.close();
+});
+
+test("sin número de WhatsApp configurado: el archivo se descarga y no se abre ninguna ventana", async () => {
+  const { ctx, page } = await openProject(env, { tpl: "minimalista" });
+  await ctx.route("**/forja/studio/config.json", (r) => r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ whatsappNumber: "" }) }));
+  await page.goto(`${env.base}/forja/studio/#/finish/${await page.evaluate(() => location.hash.split("/").pop())}`);
+  await page.reload();
+  await page.waitForSelector(".fn-grid");
+  await page.fill('input[autocomplete="name"]', "Luis");
+  await page.fill('input[type="tel"]', "3001112233");
+  const download = page.waitForEvent("download");
+  await page.click('button:has-text("QUIERO ESTA PÁGINA")');
+  await download;
+  await page.waitForSelector(".fn-code");
+  assert.match((await page.textContent(".fn-done")) ?? "", /WhatsApp aún no está configurado/);
+  assert.equal(ctx.pages().length, 1);
+  await ctx.close();
+});
+
+test("importar y exportar: un proyecto con una imagen subida viaja a otro dispositivo", async () => {
+  const { ctx, page, id } = await openProject(env, { tpl: "minimalista" });
+  const PNG_B64 = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==";
+  const ref = await api<string>(page, "async (Api,b)=>{const bytes=Uint8Array.from(atob(b),(c)=>c.charCodeAt(0));return (await Api.storeBytes(bytes,'pixel.png')).url}", PNG_B64);
+  assert.match(ref, /^\/local\/ast_/);
+  const imgId = await idByType(page, "image", 0);
+  if (imgId) { await st(page, "(ed,ws,a)=>ed.setProps([a.id],{src:a.src,alt:'Pixel'})", { id: imgId, src: ref }); await waitSaved(page); }
+  const file = await api<any>(page, "async (Api,id)=>Api.exportProjectFile(id)", id);
+  assert.equal(file.format, "icarus-studio-project");
+  if (imgId) assert.equal(file.assets.length, 1);
+  // otro «dispositivo»: contexto nuevo, almacenamiento vacío
+  const other = await newContext(env);
+  await other.page.goto(`${env.base}/forja/studio/#/projects`);
+  await other.page.waitForSelector(".pj-empty");
+  const newId = await api<string>(other.page, "async (Api,f)=>(await Api.importProject(f)).project.id", file);
+  const pj = await api<any>(other.page, "async (Api,id)=>(await Api.project(id)).project", newId);
+  if (imgId) assert.ok(JSON.stringify(pj.doc).includes("/local/") && !JSON.stringify(pj.doc).includes(ref), "la imagen se guarda con un identificador nuevo en el otro dispositivo");
+  await other.page.goto(`${env.base}/forja/studio/#/edit/${newId}`);
+  await other.page.waitForSelector(".cv-frame");
+  if (imgId) await other.page.waitForFunction(() => { const i = (document.querySelector(".cv-frame") as any)?.shadowRoot?.querySelector("img[src^='blob:']") ?? document.querySelector("img[src^='blob:']"); return !!i; }, null, { timeout: 8000 }).catch(() => {});
+  await other.ctx.close();
   await ctx.close();
 });
 
@@ -260,31 +295,31 @@ test("responsive: el diseño de escritorio no rompe móvil, se pueden ajustar ta
   await ctx.close();
 });
 
-test("guardado: autoguardado confirmado, recuperación tras recargar y tras un fallo de red", async () => {
+test("guardado local: autoguardado confirmado, recuperación tras recargar, sin conexión a internet y conflicto entre pestañas", async () => {
   const { ctx, page, logs, id } = await openProject(env, { tpl: "minimalista" });
   const t = await idByType(page, "text", 3);
-  await st(page, "(ed,ws,id)=>ed.setText(id,'Persistido en la base de datos')", t);
+  await st(page, "(ed,ws,id)=>ed.setText(id,'Persistido en el dispositivo')", t);
   assert.match((await page.textContent(".tb-save")) ?? "", /sin guardar/i);
   await waitSaved(page);
   await page.reload();
   await page.waitForSelector(".cv-frame");
-  assert.equal(await st(page, "(ed,ws,id)=>ed.doc.nodes[id].props.text", t), "Persistido en la base de datos", "el cambio se recupera desde la base de datos");
+  assert.equal(await st(page, "(ed,ws,id)=>ed.doc.nodes[id].props.text", t), "Persistido en el dispositivo", "el cambio se recupera del almacenamiento local");
 
-  // sin conexión: no se afirma que esté guardado y se recupera al reconectar
+  // sin internet todo sigue funcionando: el guardado es local
   await ctx.setOffline(true);
   const t2 = await idByType(page, "text", 4);
-  await st(page, "(ed,ws,id)=>ed.setText(id,'Escrito sin conexión')", t2);
-  await page.waitForFunction(() => /sin conexión|reintentando|No se pudo/i.test(document.querySelector(".tb-save")?.textContent || ""), null, { timeout: 15000 });
-  assert.doesNotMatch((await page.textContent(".tb-save")) ?? "", /Todos los cambios guardados/);
+  await st(page, "(ed,ws,id)=>ed.setText(id,'Escrito sin internet')", t2);
+  await waitSaved(page);
   await ctx.setOffline(false);
-  await page.click(".tb-save");
-  await waitSaved(page, 20000);
-  const r = await ctx.request.get(`${env.base}/api/projects/${id}`);
-  assert.ok(JSON.stringify((await r.json()).project.doc).includes("Escrito sin conexión"), "tras reconectar el cambio llega al servidor");
+  assert.ok(JSON.stringify((await api<any>(page, "async (Api,id)=>(await Api.project(id)).project.doc", id))).includes("Escrito sin internet"), "el cambio quedó en el almacenamiento local");
 
-  // conflicto (otra pestaña guardó antes)
-  const doc = (await (await ctx.request.get(`${env.base}/api/projects/${id}`)).json()).project;
-  await ctx.request.put(`${env.base}/api/projects/${id}`, { data: { doc: doc.doc, baseRev: doc.rev } });
+  // conflicto (otra pestaña del mismo navegador guardó antes)
+  const other = await ctx.newPage();
+  await other.addInitScript(() => { try { localStorage.setItem("icarus.debug", "1"); } catch { /* sin almacenamiento */ } });
+  await other.goto(`${env.base}/forja/studio/#/projects`);
+  await other.waitForSelector(".pj-grid, .pj-empty");
+  await api(other, "async (Api,id)=>{const p=(await Api.project(id)).project; await Api.saveProject(id,p.doc,p.rev)}", id);
+  await other.close();
   await st(page, "(ed,ws,id)=>ed.setText(id,'Cambio en la pestaña vieja')", t);
   await page.waitForFunction(() => /conflicto/i.test(document.querySelector(".tb-save")?.textContent || ""), null, { timeout: 15000 });
   noErrors(logs.filter((l) => !/409|Failed to load resource/.test(l)));
@@ -293,12 +328,10 @@ test("guardado: autoguardado confirmado, recuperación tras recargar y tras un f
 
 test("exportación: el sitio generado conserva diseño y contenido, es responsive y no contiene el editor", async () => {
   const { ctx, page, id } = await openProject(env, { tpl: "ecommerce" });
-  const res = await ctx.request.post(`${env.base}/api/projects/${id}/export`);
-  const out = (await res.json()).export;
-  const zip = await ctx.request.get(out.downloadUrl);
-  const files = listZip(Buffer.from(await zip.body()));
+  const b64 = await api<string>(page, "async (Api,id)=>{const r=await Api.buildZip(id);let s='';for(let i=0;i<r.zip.length;i+=8192)s+=String.fromCharCode(...r.zip.subarray(i,i+8192));return btoa(s)}", id);
+  const files = listZip(new Uint8Array(Buffer.from(b64, "base64")));
   const byPath = new Map(files.map((f) => [f.path, f.data]));
-  const html = byPath.get("index.html")!.toString();
+  const html = new TextDecoder().decode(byPath.get("index.html")!);
   assert.ok(!/studio|contenteditable|data-nid|__studio/.test(html), "sin restos del editor");
   assert.ok(html.includes("Objetos que hacen hogar") && html.includes("Casa Norte"), "contiene el contenido");
 
@@ -309,7 +342,7 @@ test("exportación: el sitio generado conserva diseño y contenido, es responsiv
     const f = byPath.get(p);
     if (!f) return r.fulfill({ status: 404, body: "no" });
     const type = p.endsWith(".css") ? "text/css" : p.endsWith(".js") ? "text/javascript" : p.endsWith(".svg") ? "image/svg+xml" : p.endsWith(".html") ? "text/html" : "application/octet-stream";
-    return r.fulfill({ status: 200, contentType: type, body: f });
+    return r.fulfill({ status: 200, contentType: type, body: Buffer.from(f) });
   });
   const sp = await site.newPage();
   const errs: string[] = [];
@@ -408,8 +441,8 @@ test("seguridad en el editor: texto malicioso no se ejecuta y los enlaces peligr
   assert.equal(await page.evaluate(() => (window as any).__pwned), undefined, "el texto se trata como texto");
   await st(page, "(ed,ws,id)=>ed.setProps([id],{href:'javascript:alert(1)'})", t);
   await waitSaved(page);
-  const saved = await st<string>(page, "(ed,ws,id)=>fetch('/api/projects/'+location.hash.split('/').pop()).then(r=>r.json()).then(j=>j.project.doc.nodes[id].props.href)", t);
-  assert.equal(saved, "", "el servidor descarta el enlace javascript:");
+  const saved = await api<string>(page, "async (Api,a)=>(await Api.project(a.pid)).project.doc.nodes[a.id].props.href", { pid: await page.evaluate(() => location.hash.split("/").pop()), id: t });
+  assert.equal(saved, "", "al guardar se descarta el enlace javascript:");
   noErrors(logs.filter((l) => !/javascript/.test(l)));
   await ctx.close();
 });

@@ -8,7 +8,6 @@ import { pathToFileURL } from "node:url";
 
 const ROOT = path.resolve(import.meta.dirname, "..");
 const DIST = path.join(ROOT, "dist");
-const DIST_SERVER = path.join(ROOT, "dist-server");
 
 async function walk(dir) {
   const out = [];
@@ -20,7 +19,6 @@ async function walk(dir) {
 }
 
 await rm(DIST, { recursive: true, force: true });
-await rm(DIST_SERVER, { recursive: true, force: true });
 await mkdir(DIST, { recursive: true });
 
 const targets = [
@@ -75,9 +73,7 @@ await mkdir(studioOut, { recursive: true });
 await writeFile(path.join(studioOut, "site.js"), SITE_JS);
 await rm(tmp, { recursive: true, force: true });
 
-// Servidor (API + estáticos): un solo archivo; las dependencias (pg) quedan externas.
-await build({
-  entryPoints: [path.join(ROOT, "server/index.ts")], outfile: path.join(DIST_SERVER, "index.js"), bundle: true, platform: "node",
-  format: "esm", target: "node22", packages: "external", sourcemap: true, logLevel: "warning",
-});
-console.log("Servidor OK → dist-server/index.js");
+// Configuración pública del Studio. El número de WhatsApp sale de la variable de entorno WHATSAPP_NUMBER (no está en el código).
+const wa = String(process.env.WHATSAPP_NUMBER || "").replace(/\D/g, "");
+await writeFile(path.join(DIST, "forja/studio/config.json"), JSON.stringify({ whatsappNumber: /^\d{8,15}$/.test(wa) ? wa : "" }) + "\n");
+console.log(wa ? "WhatsApp: número configurado desde WHATSAPP_NUMBER." : "WhatsApp: WHATSAPP_NUMBER no está definida (el botón no abrirá WhatsApp).");

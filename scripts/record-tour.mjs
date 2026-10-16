@@ -17,9 +17,9 @@ mkdirSync(OUT, { recursive: true });
 mkdirSync(TMP, { recursive: true });
 
 const chromePath = process.env.CHROMIUM_PATH || ["/opt/pw-browsers/chromium-1194/chrome-linux/chrome", "/opt/pw-browsers/chromium"].find(existsSync);
-const { start } = await import(pathToFileURL(path.join(ROOT, "dist-server/index.js")).href);
-const running = await start({ port: 0, host: "127.0.0.1", sqlitePath: path.join(TMP, "tour.db"), distDir: path.join(ROOT, "dist"), whatsappNumber: "", production: false }, { quiet: true });
-const base = `http://127.0.0.1:${running.server.address().port}`;
+const { startStatic } = await import(pathToFileURL(path.join(ROOT, "scripts/static-server.mjs")).href);
+const running = await startStatic({ dist: path.join(ROOT, "dist"), port: 0, quiet: true, config: { whatsappNumber: "" } });
+const base = running.base;
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const browser = await chromium.launch({ executablePath: chromePath, args: ["--no-sandbox", "--hide-scrollbars"] });
@@ -27,14 +27,16 @@ const ctx = await browser.newContext({
   viewport: { width: 1180, height: 664 },
   recordVideo: { dir: TMP, size: { width: 1280, height: 720 } },
 });
-await ctx.request.post(base + "/api/auth/register", { data: { name: "Camila Torres", email: "camila@ejemplo.co", password: "clave-segura-1" } });
-const created = await (await ctx.request.post(base + "/api/projects", {
-  data: {
-    name: "Café Brasa", siteName: "Café Brasa", pageType: "Negocio o empresa", category: "Cafetería", description: "Café de especialidad en Medellín",
-    contact: { owner: "Camila Torres", country: "Colombia", language: "es" }, brand: { colors: ["#b3261e", "#d9472b"], style: "Tecnológico" },
-  },
-})).json();
-const projectId = created.project.id;
+// el proyecto se crea en el almacenamiento local del navegador (misma sesión que se graba) desde una pestaña auxiliar
+const helper = await ctx.newPage();
+await helper.addInitScript(() => { try { localStorage.setItem("icarus.debug", "1"); } catch { /* sin almacenamiento */ } });
+await helper.goto(`${base}/forja/studio/#/projects`);
+await helper.waitForFunction(() => !!window.__icarus);
+const projectId = await helper.evaluate(async () => (await window.__icarus.Api.createProject({
+  name: "Café Brasa", siteName: "Café Brasa", pageType: "Negocio o empresa", category: "Cafetería", description: "Café de especialidad en Medellín",
+  contact: { language: "es" }, brand: { colors: ["#b3261e", "#d9472b"], style: "Tecnológico" },
+})).project.id);
+await helper.close();
 
 const page = await ctx.newPage();
 await page.addInitScript(() => {

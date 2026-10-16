@@ -1,7 +1,6 @@
 /** Mis proyectos: carpetas, búsqueda, orden, miniaturas y acciones sobre cada proyecto. */
-import { validateDoc } from "../../shared/model/validate";
 import { ProjectMeta } from "../../shared/model/types";
-import { Api, ApiError, Folder, PROJECT_STATUS_LABEL, RequestDto, STATUS_LABEL } from "../lib/api";
+import { Api, ApiError, Folder, PROJECT_STATUS_LABEL, RequestRec } from "../lib/api";
 import { confirmDialog, debounce, formatDate, h, ic, menu, modal, promptDialog, timeAgo, toast } from "../lib/dom";
 import { pageShell } from "./shell";
 import { svgEl } from "../ui/templates";
@@ -12,7 +11,7 @@ export function mountProjects(host: HTMLElement): () => void {
   const state: State = { folder: sessionStorage.getItem("studio.folder") || "all", q: "", sort: "updated", status: "", archived: false };
   let folders: Folder[] = [];
   let projects: ProjectMeta[] = [];
-  let requests: RequestDto[] = [];
+  let requests: RequestRec[] = [];
   let dragId: string | null = null;
   let disposed = false;
 
@@ -27,25 +26,18 @@ export function mountProjects(host: HTMLElement): () => void {
   const dirBtn = h("button", { type: "button", class: "st-btn st-btn--ghost", "aria-label": "Invertir orden", "data-tip": "Invertir orden" }, ic("chevron-down", 15));
   let dir = "desc";
   const title = h("h1", { class: "sh-title" }, "Mis proyectos");
-  const sub = h("p", { class: "sh-sub" }, "Organiza tus páginas en carpetas, continúa editando donde lo dejaste y solicita tu sitio cuando esté listo.");
+  const sub = h("p", { class: "sh-sub" }, "Tus proyectos se guardan en este dispositivo (sin cuenta). Organízalos en carpetas, sigue editando y, cuando estén listos, envíanos tu diseño. Para llevarlos a otro dispositivo usa «Exportar proyecto» y luego «Importar proyecto».");
 
   const importIn = h("input", { type: "file", accept: ".json,application/json", hidden: true });
   importIn.addEventListener("change", async () => {
     const f = importIn.files?.[0]; importIn.value = "";
     if (!f) return;
     try {
-      if (f.size > 6 * 1024 * 1024) throw new Error("El archivo es demasiado grande.");
+      if (f.size > 60 * 1024 * 1024) throw new Error("El archivo es demasiado grande.");
       const raw = JSON.parse(await f.text());
-      if (raw?.format !== "icarus-studio-project" || !raw.doc) throw new Error("Este archivo no es un proyecto de ICARUS Studio.");
-      const v = validateDoc(raw.doc);
-      if (!v.ok || !v.doc) throw new Error(`Proyecto inválido: ${v.errors[0]}`);
-      const m = raw.meta ?? {};
-      const { project } = await Api.createProject({
-        name: String(m.name || f.name.replace(/\.icarus\.json$|\.json$/i, "") || "Proyecto importado").slice(0, 120) + " (importado)",
-        siteName: m.siteName || v.doc.settings.siteName, description: m.description || "", pageType: m.pageType || "", category: m.category || "",
-        folderId: ["all", "root"].includes(state.folder) ? null : state.folder, doc: v.doc,
-      });
-      toast(v.warnings.length ? `Proyecto importado (se repararon ${v.warnings.length} detalles)` : "Proyecto importado", "ok");
+      const { project } = await Api.importProject(raw);
+      if (!["all", "root"].includes(state.folder)) await Api.patchProject(project.id, { folderId: state.folder });
+      toast("Proyecto importado", "ok");
       location.hash = `#/edit/${project.id}`;
     } catch (e) { toast((e as Error).message || "No se pudo importar el proyecto.", "error", 5000); }
   });
@@ -197,7 +189,7 @@ export function mountProjects(host: HTMLElement): () => void {
       grid.replaceChildren(h("div", { class: "pj-empty", style: { gridColumn: "1 / -1" } },
         ic("layers", 34),
         h("h2", null, filtered ? "No hay proyectos aquí" : "Aún no has creado ninguna página"),
-        h("p", null, filtered ? "Prueba con otra búsqueda, otra carpeta o crea un proyecto nuevo." : "Crea tu primer sitio web a partir de una plantilla o desde cero. Se guardará automáticamente en tu cuenta."),
+        h("p", null, filtered ? "Prueba con otra búsqueda, otra carpeta o crea un proyecto nuevo." : "Crea tu primer sitio web a partir de una plantilla o desde cero. Se guardará automáticamente en este dispositivo."),
         h("a", { class: "st-btn st-btn--primary", href: "#/new" }, ic("plus", 15), "Crear mi primera página")));
       return;
     }
@@ -207,9 +199,9 @@ export function mountProjects(host: HTMLElement): () => void {
   async function loadRequests() {
     try { requests = (await Api.myRequests()).requests; } catch { requests = []; }
     if (!requests.length) { reqBox.replaceChildren(); return; }
-    reqBox.replaceChildren(h("h2", { class: "sh-title", style: { fontSize: "20px" } }, "Mis solicitudes"),
-      ...requests.map((r) => h("div", { class: "pj-req" }, h("code", null, r.id), h("div", null, h("strong", null, String(r.summary.projectName ?? "")), h("div", { class: "st-hint" }, `${formatDate(r.createdAt)} · ${r.summary.pageCount ?? 1} página(s)`)),
-        h("span", { class: `ad-badge ad-badge--${r.status}` }, STATUS_LABEL[r.status] ?? r.status))));
+    reqBox.replaceChildren(h("h2", { class: "sh-title", style: { fontSize: "20px" } }, "Enviadas desde este dispositivo"),
+      ...requests.map((r) => h("div", { class: "pj-req" }, h("code", null, r.id), h("div", null, h("strong", null, r.projectName), h("div", { class: "st-hint" }, `${formatDate(r.createdAt)} · ${r.summary.pageCount ?? 1} página(s) · ${r.filename}`)),
+        h("a", { class: "st-btn st-btn--ghost st-btn--sm", href: `#/finish/${r.projectId}` }, "Volver a enviar"))));
   }
 
   /* ---------- Eventos ---------- */
@@ -221,7 +213,7 @@ export function mountProjects(host: HTMLElement): () => void {
 
   grid.replaceChildren(h("div", { class: "st-loading", style: { gridColumn: "1 / -1" } }, h("span", { class: "st-spin" })));
   void (async () => {
-    try { await loadFolders(); } catch (e) { if ((e as ApiError).status === 401) { location.hash = "#/login"; return; } }
+    try { await loadFolders(); } catch (e) { toast((e as ApiError).message, "error"); }
     await loadProjects();
     await loadRequests();
   })();

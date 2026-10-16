@@ -22,7 +22,6 @@ const CATEGORIES: { id: string; label: string; icon: string; templates: string[]
 ];
 
 const STYLES = ["Minimalista", "Corporativo", "Tecnológico", "Elegante", "Creativo", "Comercio", "Portafolio", "Agencia", "Ventas", "Editorial"];
-const COUNTRIES = ["Colombia", "México", "Argentina", "Chile", "Perú", "Ecuador", "Venezuela", "Uruguay", "Bolivia", "Paraguay", "Panamá", "Costa Rica", "República Dominicana", "Guatemala", "España", "Estados Unidos", "Otro país"];
 
 interface Draft {
   name: string; siteName: string; owner: string; description: string; category: string; email: string; phone: string; country: string; language: string;
@@ -64,7 +63,7 @@ export async function mountWizard(host: HTMLElement, args: string[]): Promise<()
         onclick: () => { if (i === 0 && projectId) location.hash = `#/new/${projectId}/info`; } }, h("i"), `${n}. ${l}`))));
   host.replaceChildren(pageShell("new", h("div", null,
     h("h1", { class: "sh-title" }, step === 1 ? "Crea tu página web" : "Elige un diseño"),
-    h("p", { class: "sh-sub" }, step === 1 ? "Cuéntanos lo básico. Puedes cambiar todo después y no necesitas completar los campos opcionales." : "Cada plantilla es un diseño real y editable: podrás cambiar textos, imágenes, colores, tipografías y animaciones."),
+    h("p", { class: "sh-sub" }, step === 1 ? "Cuéntanos lo básico. Tu proyecto se guarda en este dispositivo y no necesitas cuenta. Tu nombre y WhatsApp te los pedimos al final." : "Cada plantilla es un diseño real y editable: podrás cambiar textos, imágenes, colores, tipografías y animaciones."),
     steps, body), { narrow: step === 1 }));
 
   if (step === 1) stepOne(); else stepTwo();
@@ -81,7 +80,6 @@ export async function mountWizard(host: HTMLElement, args: string[]): Promise<()
         draft.category = c.id; save();
         typeBox.querySelectorAll("button").forEach((b) => { const on = b.textContent === c.label; b.classList.toggle("is-on", on); b.setAttribute("aria-checked", String(on)); });
       } }, ic(c.icon, 17), c.label)));
-    const country = bind(h("select", { class: "st-select" }, COUNTRIES.map((c) => h("option", { value: c }, c))), "country");
     const lang = bind(h("select", { class: "st-select" }, [["es", "Español"], ["en", "English"], ["pt", "Português"]].map(([v, l]) => h("option", { value: v }, l))), "language");
     const styleBox = h("div", { class: "wz-types", role: "radiogroup", "aria-label": "Estilo visual" }, STYLES.map((s) =>
       h("button", { type: "button", role: "radio", class: `wz-type${draft.style === s ? " is-on" : ""}`, "aria-checked": String(draft.style === s), onclick: () => {
@@ -100,13 +98,9 @@ export async function mountWizard(host: HTMLElement, args: string[]): Promise<()
       h("div", { class: "wz-grid" },
         input("name", "Nombre del proyecto", { req: true, ph: "Ej.: Agencia Digital", hint: "Es el nombre interno que ves en «Mis proyectos»." }),
         input("siteName", "Nombre público del sitio", { req: true, ph: "Ej.: Pulso Agency", hint: "Es el que verán los visitantes. Puede ser distinto." }),
-        input("owner", "Persona o empresa responsable", { ph: "Tu nombre o el de tu empresa" }),
         input("category", "Actividad o categoría", { ph: "Ej.: cafetería, abogados, fotografía…" }),
         h("div", { class: "wide" }, h("label", { class: "st-field" }, h("span", { class: "st-field__label" }, "Descripción del negocio (opcional)"), desc)),
         h("div", { class: "wide st-field" }, h("span", { class: "st-field__label" }, "Tipo de página que quieres crear"), typeBox),
-        input("email", "Correo de contacto", { type: "email", ph: "hola@tunegocio.com", max: 254 }),
-        input("phone", "Teléfono o WhatsApp", { type: "tel", ph: "+57 300 000 0000", max: 40 }),
-        h("label", { class: "st-field" }, h("span", { class: "st-field__label" }, "País"), country),
         h("label", { class: "st-field" }, h("span", { class: "st-field__label" }, "Idioma del sitio"), lang),
         h("div", { class: "wide st-field" }, h("span", { class: "st-field__label" }, "Colores principales"), h("div", { class: "wz-colors" }, colorIn(0, "Principal"), colorIn(1, "Secundario"))),
         h("div", { class: "wide st-field" }, h("span", { class: "st-field__label" }, "Estilo visual preferido (opcional)"), styleBox)),
@@ -121,14 +115,13 @@ export async function mountWizard(host: HTMLElement, args: string[]): Promise<()
       if (!draft.name.trim() && draft.siteName.trim()) draft.name = draft.siteName.trim();
       if (!draft.siteName.trim() && draft.name.trim()) draft.siteName = draft.name.trim();
       if (!draft.name.trim()) { err.textContent = "Escribe el nombre del proyecto para continuar."; err.hidden = false; form.querySelector<HTMLInputElement>("input")!.focus(); return; }
-      if (draft.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(draft.email)) { err.textContent = "Revisa el correo de contacto."; err.hidden = false; return; }
       if (project) {
         try {
           next.setAttribute("disabled", "");
           const cat0 = CATEGORIES.find((c) => c.id === draft.category);
           await Api.patchProject(project.id, {
             name: draft.name.trim(), siteName: draft.siteName.trim(), description: draft.description.trim(), pageType: cat0?.id ?? draft.category, category: draft.category,
-            contact: { owner: draft.owner, email: draft.email, phone: draft.phone, country: draft.country, language: draft.language }, brand: { colors: draft.colors, style: draft.style },
+            contact: { ...(project?.contact ?? {}), language: draft.language }, brand: { colors: draft.colors, style: draft.style },
           });
           toast("Datos del proyecto actualizados", "ok", 1500);
           location.hash = go ? `#/new/${project.id}` : "#/projects";
@@ -143,11 +136,11 @@ export async function mountWizard(host: HTMLElement, args: string[]): Promise<()
         (go ? next : saveBtn).setAttribute("disabled", "");
         const { project: p } = await Api.createProject({
           name: draft.name.trim(), siteName: draft.siteName.trim(), description: draft.description.trim(), pageType: cat?.id ?? draft.category, category: draft.category,
-          contact: { owner: draft.owner, email: draft.email, phone: draft.phone, country: draft.country, language: draft.language },
+          contact: { language: draft.language },
           brand: { colors: draft.colors, style: draft.style }, doc,
         });
         sessionStorage.removeItem(KEY);
-        toast("Borrador guardado en tu cuenta", "ok", 1800);
+        toast("Borrador guardado en este dispositivo", "ok", 1800);
         location.hash = go ? `#/new/${p.id}` : "#/projects";
       } catch (e) {
         err.textContent = (e as ApiError).message; err.hidden = false;

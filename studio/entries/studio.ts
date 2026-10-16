@@ -1,18 +1,16 @@
 /** ICARUS Studio — punto de entrada: sesión, enrutado por hash y vistas. */
 import { session } from "../core/session";
-import { Api } from "../lib/api";
 import { h, toast } from "../lib/dom";
-import { mountAuth } from "../app/auth";
+import { Api } from "../lib/api";
+import { requestPersistence } from "../lib/local";
 
 type View = (host: HTMLElement, args: string[]) => Promise<() => void> | (() => void);
 
-const routes: { re: RegExp; auth: "none" | "user" | "admin"; load: () => Promise<View> }[] = [
-  { re: /^#\/login$/, auth: "none", load: async () => (host) => mountAuth(host, () => { location.hash = sessionStorage.getItem("studio.next") || "#/projects"; sessionStorage.removeItem("studio.next"); }) },
-  { re: /^#\/projects$/, auth: "user", load: async () => (await import("../app/projects")).mountProjects },
-  { re: /^#\/new(?:\/([\w-]+))?(?:\/(info))?$/, auth: "user", load: async () => (await import("../app/wizard")).mountWizard },
-  { re: /^#\/edit\/([\w-]+)$/, auth: "user", load: async () => (await import("../app/edit-route")).mountEditRoute },
-  { re: /^#\/finish\/([\w-]+)$/, auth: "user", load: async () => (await import("../app/finish")).mountFinish },
-  { re: /^#\/admin(?:\/([\w-]+))?$/, auth: "admin", load: async () => (await import("../app/admin")).mountAdmin },
+const routes: { re: RegExp; load: () => Promise<View> }[] = [
+  { re: /^#\/projects$/, load: async () => (await import("../app/projects")).mountProjects },
+  { re: /^#\/new(?:\/([\w-]+))?(?:\/(info))?$/, load: async () => (await import("../app/wizard")).mountWizard },
+  { re: /^#\/edit\/([\w-]+)$/, load: async () => (await import("../app/edit-route")).mountEditRoute },
+  { re: /^#\/finish\/([\w-]+)$/, load: async () => (await import("../app/finish")).mountFinish },
 ];
 
 let dispose: (() => void) | null = null;
@@ -27,15 +25,6 @@ async function route(): Promise<void> {
   const hash = location.hash || "#/projects";
   const r = routes.find((x) => x.re.test(hash));
   if (!r) { location.hash = "#/projects"; return; }
-  if (r.auth !== "none" && !session.user) {
-    sessionStorage.setItem("studio.next", hash);
-    location.hash = "#/login";
-    return;
-  }
-  if (r.auth === "admin" && session.user?.role !== "admin") {
-    host.replaceChildren(h("div", { class: "st-fullmsg" }, h("h1", null, "Acceso restringido"), h("p", null, "Esta sección es solo para el equipo de ICARUS."), h("a", { class: "st-btn st-btn--primary", href: "#/projects" }, "Ir a Mis proyectos")));
-    return;
-  }
   host.replaceChildren(h("div", { class: "st-loading", role: "status" }, h("span", { class: "st-spin" }), "Cargando…"));
   try {
     const view = await r.load();
@@ -51,13 +40,16 @@ async function route(): Promise<void> {
 }
 
 async function boot(): Promise<void> {
-  const [config, me] = await Promise.all([Api.config().catch(() => null), Api.me().catch(() => ({ user: null }))]);
-  session.config = config;
-  session.user = me?.user ?? null;
+  try {
+    const r = await fetch("/forja/studio/config.json", { cache: "no-store" });
+    const c = r.ok ? await r.json() : null;
+    if (c && typeof c.whatsappNumber === "string" && /^\d{8,15}$/.test(c.whatsappNumber)) session.config.whatsappNumber = c.whatsappNumber;
+  } catch { /* sin configuración: WhatsApp no estará disponible */ }
   window.addEventListener("hashchange", () => void route());
   window.addEventListener("unhandledrejection", (e) => { console.error(e.reason); });
-  if (!config) toast("No se pudo contactar con el servidor. Comprueba tu conexión.", "error", 6000);
+  void requestPersistence();
   await route();
 }
 
+try { if (localStorage.getItem("icarus.debug")) (window as any).__icarus = { Api }; } catch { /* sin almacenamiento */ }
 void boot();

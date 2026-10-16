@@ -6,7 +6,7 @@ import { N } from "../../shared/model/build";
 import { LIBRARY, libSrc, SITE_IMAGES } from "../../shared/library";
 import { Editor } from "../core/editor";
 import { Api, Asset } from "../lib/api";
-import { session } from "../core/session";
+import { assetUrl } from "../lib/assetres";
 import { cssColor } from "../../shared/model/style";
 import { h, ic, promptDialog, toast } from "../lib/dom";
 import { uploadFile } from "./assets";
@@ -53,7 +53,7 @@ export class ResourcesPanel {
 
   private images(): void {
     const grid = (items: { src: string; name: string }[]) => h("div", { class: "rs-grid" }, items.map((i) =>
-      h("button", { type: "button", class: "rs-img", title: `Usar «${i.name}»`, "aria-label": `Usar ${i.name}`, onclick: () => this.useImage(i.src, i.name) }, h("img", { src: i.src, alt: "", loading: "lazy", decoding: "async" }), h("span", null, i.name))));
+      h("button", { type: "button", class: "rs-img", title: `Usar «${i.name}»`, "aria-label": `Usar ${i.name}`, onclick: () => this.useImage(i.src, i.name) }, h("img", { src: assetUrl(i.src), alt: "", loading: "lazy", decoding: "async" }), h("span", null, i.name))));
     const file = h("input", { type: "file", hidden: true, accept: "image/png,image/jpeg,image/webp,image/gif,image/avif" });
     file.addEventListener("change", async () => {
       const f = file.files?.[0]; file.value = "";
@@ -66,8 +66,7 @@ export class ResourcesPanel {
       h("h3", { class: "in-title" }, "Mis imágenes"));
     const mineBox = h("div", null);
     this.body.append(mineBox);
-    if (!session.user) mineBox.append(h("p", { class: "st-empty" }, "Inicia sesión para subir imágenes."));
-    else if (this.mine) mineBox.append(this.mine.length ? grid(this.mine.filter((a) => a.kind === "image").map((a) => ({ src: a.url, name: a.name }))) : h("p", { class: "st-empty" }, "Aún no has subido imágenes."));
+    if (this.mine) mineBox.append(this.mine.length ? grid(this.mine.filter((a) => a.kind === "image").map((a) => ({ src: a.url, name: a.name }))) : h("p", { class: "st-empty" }, "Aún no has subido imágenes."));
     else {
       mineBox.append(h("p", { class: "st-empty" }, "Cargando…"));
       Api.assets().then(({ assets }) => { this.mine = assets; if (this.sub === "images") this.render(); }).catch(() => { mineBox.replaceChildren(h("p", { class: "st-empty" }, "No se pudieron cargar tus imágenes.")); });

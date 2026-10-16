@@ -1,6 +1,6 @@
 /** Ruta #/edit/:id — carga el proyecto, ofrece recuperar cambios locales y abre el editor. */
 import { validateDoc } from "../../shared/model/validate";
-import { Api, ApiError } from "../lib/api";
+import { Api, ApiError, preloadAssets } from "../lib/api";
 import { clearBackup, getBackup } from "../lib/idb";
 import { h, modal, toast } from "../lib/dom";
 import { mountEditor } from "./editor-view";
@@ -10,11 +10,12 @@ export async function mountEditRoute(host: HTMLElement, args: string[]): Promise
   let project;
   try {
     project = (await Api.project(id)).project;
+    await preloadAssets(project.doc);
   } catch (e) {
     const err = e as ApiError;
     host.replaceChildren(h("div", { class: "st-fullmsg" },
       h("h1", null, err.status === 404 ? "No encontramos este proyecto" : "No se pudo abrir el proyecto"),
-      h("p", null, err.status === 404 ? "Puede que se haya eliminado o que pertenezca a otra cuenta." : err.message),
+      h("p", null, err.status === 404 ? "Puede que se haya eliminado o que esté guardado en otro dispositivo o navegador." : err.message),
       h("a", { class: "st-btn st-btn--primary", href: "#/projects" }, "Ir a Mis proyectos")));
     return () => {};
   }
@@ -26,7 +27,7 @@ export async function mountEditRoute(host: HTMLElement, args: string[]): Promise
     if (ok.ok) {
       const r = await modal({
         title: "Recuperar cambios sin guardar",
-        body: `Encontramos cambios de tu última sesión (${new Date(b.at).toLocaleString("es-CO")}) que no llegaron a guardarse en tu cuenta. ¿Quieres recuperarlos?`,
+        body: `Encontramos cambios de tu última sesión (${new Date(b.at).toLocaleString("es-CO")}) que no llegaron a guardarse. ¿Quieres recuperarlos?`,
         actions: [{ label: "Descartarlos", kind: "ghost", value: "no" }, { label: "Recuperar cambios", kind: "primary", value: "yes" }],
       });
       if (r === "yes") restored = ok.doc;

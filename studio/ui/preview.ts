@@ -1,4 +1,5 @@
 /** Vista previa a pantalla completa: el sitio real (sin interfaz del editor) en un iframe aislado con ancho de dispositivo. */
+import { inlineLocalRefs } from "../lib/assetres";
 import { buildSite } from "../../shared/export/render";
 import { Device, Doc, DEVICE_WIDTHS } from "../../shared/model/types";
 import { h, ic, clamp } from "../lib/dom";
@@ -24,11 +25,14 @@ export function openPreview(o: PreviewOptions): { close(): void } {
 
   const pageOptions = () => pageSel.replaceChildren(...doc.pages.map((p) => h("option", { value: p.id }, p.id === doc.settings.homePageId ? `${p.name} (principal)` : p.name)));
 
+  let loadTok = 0;
   function load() {
     const site = buildSite(doc, { mode: "preview" });
     const page = site.pages.find((p) => p.page.id === pageId) ?? site.pages[0];
     pageId = page.page.id;
-    iframe.srcdoc = page.html;
+    const my = ++loadTok;
+    if (page.html.includes("/local/")) void inlineLocalRefs(page.html).then((html) => { if (my === loadTok) iframe.srcdoc = html; });
+    else iframe.srcdoc = page.html;
     pageSel.value = pageId;
     note.textContent = site.warnings.length ? `${site.warnings.length} aviso(s): ${site.warnings[0]}` : "";
   }

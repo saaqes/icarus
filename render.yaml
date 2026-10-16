@@ -1,39 +1,57 @@
-# ICARUS en Render: un servicio web Node (sitio estático + API del constructor).
-# La base de datos PostgreSQL vive en Neon (DATABASE_URL se define en el panel de Render).
+# ICARUS en Render: sitio estático (sin servidor ni base de datos).
+# Los proyectos del constructor se guardan en cada dispositivo (IndexedDB); el ZIP se genera en el navegador.
 services:
   - type: web
     name: icarus
-    runtime: node
-    plan: free
-    # --include=dev: esbuild y TypeScript son devDependencies y se necesitan para compilar
-    buildCommand: npm ci --include=dev && npm run build
-    startCommand: node dist-server/index.js
-    healthCheckPath: /healthz
+    runtime: static
+    buildCommand: npm ci && npm run build
+    staticPublishPath: ./dist
     envVars:
       - key: NODE_VERSION
         value: 22
-      - key: NODE_ENV
-        value: production
-      # Cadena de conexión de Neon (Connection string, con ?sslmode=require). Se pega en Render > Environment.
-      - key: DATABASE_URL
-        sync: false
-      - key: STORAGE_DRIVER
-        value: db
-      - key: EXPORT_TTL_DAYS
-        value: 14
-      # Configúralas en el panel de Render (Environment). Ver .env.example
+      # Número de WhatsApp de ICARUS (solo dígitos con código de país, p. ej. 573001112233).
+      # Se lee al compilar: si lo cambias, haz un nuevo despliegue (Manual Deploy).
       - key: WHATSAPP_NUMBER
         sync: false
-      - key: ADMIN_EMAILS
-        sync: false
-      - key: PUBLIC_BASE_URL
-        sync: false
-      - key: WHATSAPP_CLOUD_TOKEN
-        sync: false
-      - key: WHATSAPP_PHONE_NUMBER_ID
-        sync: false
-      - key: WHATSAPP_NOTIFY_TO
-        sync: false
-      - key: WHATSAPP_TEMPLATE
-        sync: false
-    # Las cabeceras de seguridad (CSP, HSTS…) y las redirecciones de /forja/demos/* las aplica ahora server/static.ts.
+    routes:
+      - type: redirect
+        source: /forja/demos/tienda
+        destination: /forja/demos/tienda-virtual/
+      - type: redirect
+        source: /forja/demos/sistema
+        destination: /forja/demos/sistema-administrativo/
+      - type: redirect
+        source: /forja/demos/reservas
+        destination: /forja/demos/sistema-reservas/
+      - type: redirect
+        source: /forja/demos/landing
+        destination: /forja/demos/landing-page/
+    headers:
+      - path: /*
+        name: Content-Security-Policy
+        # img-src/media-src admiten blob: (archivos subidos, guardados en el dispositivo) y https: (enlaces del usuario).
+        value: "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; media-src 'self' blob: https:; connect-src 'self'; frame-src 'self' https://saaqes.github.io https://star-crumbs.onrender.com; frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests"
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /*
+        name: X-Frame-Options
+        value: SAMEORIGIN
+      - path: /*
+        name: Referrer-Policy
+        value: strict-origin-when-cross-origin
+      - path: /*
+        name: Permissions-Policy
+        value: camera=(), microphone=(), geolocation=(), payment=()
+      - path: /*
+        name: Strict-Transport-Security
+        value: max-age=31536000; includeSubDomains
+      - path: /assets/*
+        name: Cache-Control
+        value: public, max-age=86400
+      - path: /forja/assets/*
+        name: Cache-Control
+        value: public, max-age=86400
+      - path: /forja/studio/config.json
+        name: Cache-Control
+        value: no-store

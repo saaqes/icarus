@@ -10,6 +10,7 @@ import { ICONS, WHATSAPP_PATH } from "../../shared/model/icons";
 import { declsToString, innerDecls, isFreeFallback, nodeDecls, resolveStyle } from "../../shared/model/style";
 import { Device, Doc, Node } from "../../shared/model/types";
 import { Rect } from "../core/editor";
+import { assetUrl, resolveCss } from "../lib/assetres";
 
 const EDITOR_CSS = `
 :host{all:initial;display:block;contain:layout style}
@@ -151,7 +152,7 @@ export class CanvasView {
     const el = ent.el;
     const st = resolveStyle(node, o.device);
     const decls = nodeDecls(doc, node, o.device, { state: o.hoverStateId === node.id ? "hover" : "normal", forEditor: true });
-    let css = declsToString(decls);
+    let css = resolveCss(declsToString(decls));
     if (node.hidden) css += ";display:none";
     el.style.cssText = css;
     el.className = `n n-${node.type}`;
@@ -181,7 +182,8 @@ export class CanvasView {
         if (p.src) {
           el.querySelector(".ph")?.remove();
           if (!img) { img = document.createElement("img"); img.alt = ""; img.draggable = false; img.decoding = "async"; el.appendChild(img); }
-          if (img.getAttribute("src") !== p.src) img.setAttribute("src", p.src);
+          const u = assetUrl(p.src);
+          if (img.getAttribute("src") !== u) img.setAttribute("src", u);
           if (inner) img.style.cssText = declsToString(inner.decls);
         } else {
           img?.remove();
@@ -194,8 +196,9 @@ export class CanvasView {
         if (p.src) {
           el.querySelector(".ph")?.remove();
           if (!v) { v = document.createElement("video"); v.muted = true; v.preload = "metadata"; v.playsInline = true; el.appendChild(v); }
-          if (v.getAttribute("src") !== p.src) v.setAttribute("src", p.src);
-          if (p.poster) v.setAttribute("poster", p.poster); else v.removeAttribute("poster");
+          const u = assetUrl(p.src);
+          if (v.getAttribute("src") !== u) v.setAttribute("src", u);
+          if (p.poster) v.setAttribute("poster", assetUrl(p.poster)); else v.removeAttribute("poster");
           if (inner) v.style.cssText = declsToString(inner.decls);
         } else {
           v?.remove();

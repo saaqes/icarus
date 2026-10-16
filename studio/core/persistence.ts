@@ -1,9 +1,9 @@
 /**
  * Autoguardado con control de frecuencia. Reglas:
- *  - nunca se muestra «guardado» antes de que el servidor lo confirme;
- *  - una sola petición en vuelo; si hay cambios nuevos, se encadena otro guardado desde la revisión devuelta;
- *  - copia de seguridad local (IndexedDB) mientras haya cambios sin confirmar;
- *  - reintento automático con espera creciente y reintento manual.
+ *  - nunca se muestra «guardado» antes de que el almacenamiento local (IndexedDB) lo confirme;
+ *  - un solo guardado en vuelo; si hay cambios nuevos, se encadena otro desde la revisión devuelta;
+ *  - copia de seguridad aparte mientras haya cambios sin confirmar;
+ *  - reintento automático con espera creciente (p. ej. si el dispositivo se quedó sin espacio).
  */
 import { Doc } from "../../shared/model/types";
 import { ApiError, Api } from "../lib/api";
@@ -35,12 +35,9 @@ export class Persistence {
       last = s.docRev;
       if (this.stopped) return;
       this.backup();
-      if (!navigator.onLine) { ed.setSave("offline", "Sin conexión · cambios guardados solo en este navegador"); return; }
       this.schedule();
       this.maxWait ??= setTimeout(() => { this.maxWait = undefined; void this.save(false); }, 15000);
     });
-    window.addEventListener("online", this.onOnline);
-    window.addEventListener("offline", this.onOffline);
     window.addEventListener("beforeunload", this.onUnload);
   }
 
@@ -50,8 +47,6 @@ export class Persistence {
 
   get isDirty(): boolean { return this.ed.s.docRev !== this.savedDocRev; }
 
-  private onOnline = () => { if (this.isDirty) void this.save(false); };
-  private onOffline = () => { if (this.isDirty) this.ed.setSave("offline", "Sin conexión · cambios guardados solo en este navegador"); };
   private onUnload = (e: BeforeUnloadEvent) => {
     if (this.isDirty) { e.preventDefault(); e.returnValue = ""; }
   };
@@ -95,14 +90,12 @@ export class Persistence {
     } catch (e) {
       const err = e as ApiError;
       if (err.status === 409 && err.code === "conflict") {
-        ed.setSave("conflict", "Conflicto: el proyecto cambió en otra pestaña o dispositivo");
+        ed.setSave("conflict", "Conflicto: el proyecto cambió en otra pestaña de este navegador");
         this.onConflict(Number(err.data?.rev));
         return false;
       }
-      if (err.status === 401) { ed.setSave("error", "Tu sesión caducó. Inicia sesión de nuevo (tus cambios están a salvo en este navegador)."); return false; }
-      if (err.status === 422) { ed.setSave("error", `El servidor rechazó el documento: ${err.message}`); return false; }
-      const msg = err.isNetwork ? "Sin conexión · reintentando…" : `No se pudo guardar (${err.message})`;
-      ed.setSave(err.isNetwork && !navigator.onLine ? "offline" : "error", msg);
+      if (err.status === 422) { ed.setSave("error", `El documento no es válido: ${err.message}`); return false; }
+      ed.setSave("error", `No se pudo guardar en este dispositivo (${err.message})`);
       const wait = Math.min(60000, 3000 * 2 ** this.retries++);
       this.retryTimer = setTimeout(() => { void this.save(false); }, wait);
       return false;
@@ -124,8 +117,6 @@ export class Persistence {
     this.backup.cancel();
     if (this.maxWait) clearTimeout(this.maxWait);
     if (this.retryTimer) clearTimeout(this.retryTimer);
-    window.removeEventListener("online", this.onOnline);
-    window.removeEventListener("offline", this.onOffline);
     window.removeEventListener("beforeunload", this.onUnload);
   }
 }

@@ -2,7 +2,7 @@
 import { LIBRARY, libSrc, SITE_IMAGES } from "../../shared/library";
 import { Api, ApiError, Asset } from "../lib/api";
 import { clear, h, ic, modal, toast } from "../lib/dom";
-import { session } from "../core/session";
+import { assetUrl } from "../lib/assetres";
 
 const MAX_IMAGE = 5 * 1024 * 1024;
 const OK_TYPES = ["image/png", "image/jpeg", "image/webp", "image/gif", "image/avif", "video/mp4", "video/webm"];
@@ -11,7 +11,7 @@ export function validateFile(f: File, kind: "image" | "video" | "any"): string |
   if (!OK_TYPES.includes(f.type)) return "Formato no admitido. Usa PNG, JPG, WebP, GIF, AVIF, MP4 o WebM.";
   if (kind === "image" && !f.type.startsWith("image/")) return "Aquí solo se admiten imágenes.";
   if (kind === "video" && !f.type.startsWith("video/")) return "Aquí solo se admiten vídeos.";
-  const max = f.type.startsWith("image/") ? MAX_IMAGE : (session.config?.maxUploadMb ?? 8) * 1024 * 1024;
+  const max = f.type.startsWith("image/") ? MAX_IMAGE : 25 * 1024 * 1024;
   if (f.size > max) return `El archivo pesa ${(f.size / 1048576).toFixed(1)} MB; el máximo es ${Math.round(max / 1048576)} MB.`;
   return null;
 }
@@ -20,12 +20,12 @@ export async function uploadFile(f: File, kind: "image" | "video" | "any" = "any
   const err = validateFile(f, kind);
   if (err) { toast(err, "error", 5000); return null; }
   try {
-    const { asset } = await Api.upload(f, session.projectId ?? undefined);
+    const { asset } = await Api.upload(f);
     toast("Archivo subido", "ok", 1500);
     return asset;
   } catch (e) {
     const a = e as ApiError;
-    toast(a.status === 401 ? "Inicia sesión para subir archivos." : a.message, "error", 5000);
+    toast(a.message, "error", 5000);
     return null;
   }
 }
@@ -43,7 +43,7 @@ export function pickAsset(kind: "image" | "video" | "any" = "image", title = "El
     const thumb = (url: string, name: string, isVideo = false, onDelete?: () => void) =>
       h("div", { class: "ap-item" },
         h("button", { type: "button", class: "ap-thumb", title: name, "aria-label": `Usar ${name}`, onclick: () => choose(url) },
-          isVideo ? h("div", { class: "ap-video" }, ic("play", 22)) : h("img", { src: url, alt: "", loading: "lazy", decoding: "async" }), h("span", null, name)),
+          isVideo ? h("div", { class: "ap-video" }, ic("play", 22)) : h("img", { src: assetUrl(url), alt: "", loading: "lazy", decoding: "async" }), h("span", null, name)),
         onDelete ? h("button", { type: "button", class: "ap-del st-icon-btn", "aria-label": `Eliminar ${name}`, onclick: onDelete }, ic("trash", 14)) : null);
 
     const tabMine = async () => {
@@ -52,7 +52,6 @@ export function pickAsset(kind: "image" | "video" | "any" = "image", title = "El
       content.append(
         h("div", { class: "ap-bar" }, h("button", { type: "button", class: "st-btn st-btn--primary st-btn--sm", onclick: () => fileIn.click() }, ic("upload", 14), "Subir archivo"),
           h("span", { class: "st-hint" }, "PNG, JPG, WebP, GIF, AVIF (5 MB) · MP4, WebM")), grid);
-      if (!session.user) { grid.append(h("p", { class: "st-empty" }, "Inicia sesión para ver y subir tus archivos.")); return; }
       grid.append(h("p", { class: "st-empty" }, "Cargando…"));
       try {
         const { assets } = await Api.assets();

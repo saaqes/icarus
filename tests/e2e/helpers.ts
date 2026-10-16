@@ -1,19 +1,19 @@
-/** Utilidades para las pruebas de extremo a extremo (Chromium de Playwright + servidor real con SQLite en memoria). */
+/** Utilidades para las pruebas de extremo a extremo (Chromium de Playwright + servidor estático sobre dist/). */
 import { existsSync } from "node:fs";
 import path from "node:path";
 import { chromium, type Browser, type BrowserContext, type Page } from "playwright-core";
-import { start, type Running } from "../../server/index";
+// @ts-ignore módulo JS sin tipos
+import { startStatic } from "../../scripts/static-server.mjs";
 
 const CANDIDATES = [process.env.CHROMIUM_PATH, "/opt/pw-browsers/chromium-1194/chrome-linux/chrome", "/opt/pw-browsers/chromium/chrome-linux/chrome", "/usr/bin/chromium", "/usr/bin/chromium-browser"].filter(Boolean) as string[];
 
-export interface Env { srv: Running; base: string; browser: Browser }
+export interface Env { srv: { close(): Promise<void> }; base: string; browser: Browser }
 
 export async function setup(): Promise<Env> {
   const dist = path.resolve("dist");
   if (!existsSync(path.join(dist, "forja/studio/assets/js/studio.js"))) throw new Error("Falta dist/: ejecuta `npm run build` antes de las pruebas e2e.");
-  const srv = await start({ port: 0, host: "127.0.0.1", sqlitePath: ":memory:", databaseUrl: "", distDir: dist, adminEmails: ["admin@icarus.test"], whatsappNumber: "573001112233", exportTtlDays: 7 }, { quiet: true });
-  const a = srv.server.address();
-  const base = `http://127.0.0.1:${typeof a === "object" && a ? a.port : 0}`;
+  const srv = await startStatic({ dist, port: 0, quiet: true, config: { whatsappNumber: "573001112233" } });
+  const base = srv.base as string;
   const executablePath = CANDIDATES.find((p) => existsSync(p));
   const browser = await chromium.launch({ executablePath, args: ["--no-sandbox"] });
   return { srv, base, browser };
@@ -26,8 +26,7 @@ export async function teardown(env: Env): Promise<void> {
 
 export interface Session { ctx: BrowserContext; page: Page; logs: string[]; id: string }
 
-let counter = 0;
-export async function newContext(env: Env, opts: { w?: number; h?: number; touch?: boolean } = {}): Promise<{ ctx: BrowserContext; page: Page; logs: string[]; email: string }> {
+export async function newContext(env: Env, opts: { w?: number; h?: number; touch?: boolean } = {}): Promise<{ ctx: BrowserContext; page: Page; logs: string[] }> {
   const ctx = await env.browser.newContext({ viewport: { width: opts.w ?? 1440, height: opts.h ?? 900 }, hasTouch: !!opts.touch, isMobile: !!opts.touch });
   const page = await ctx.newPage();
   const logs: string[] = [];
@@ -39,16 +38,19 @@ export async function newContext(env: Env, opts: { w?: number; h?: number; touch
   });
   page.on("pageerror", (e) => logs.push(`PAGEERROR: ${e.message}`));
   await page.addInitScript(() => { try { localStorage.setItem("icarus.debug", "1"); } catch { /* sin almacenamiento */ } });
-  const email = `u${Date.now()}${counter++}@test.co`;
-  const r = await ctx.request.post(env.base + "/api/auth/register", { data: { name: "Usuaria de prueba", email, password: "clave-segura-1" } });
-  if (r.status() !== 201) throw new Error("registro falló: " + r.status());
-  return { ctx, page, logs, email };
+  return { ctx, page, logs };
+}
+
+/** Ejecuta una función de la «API» local del Studio dentro de la página (debe estar abierta una pantalla del Studio). */
+export function api<T = any>(page: Page, expr: string, arg?: unknown): Promise<T> {
+  return page.evaluate(new Function("a", `const {Api}=window.__icarus; return (${expr})(Api,a)`) as any, arg) as Promise<T>;
 }
 
 export async function openProject(env: Env, opts: { tpl?: string; w?: number; h?: number; touch?: boolean } = {}): Promise<Session> {
   const { ctx, page, logs } = await newContext(env, opts);
-  const r = await ctx.request.post(env.base + "/api/projects", { data: { name: "Proyecto e2e", siteName: "Sitio e2e", templateId: opts.tpl ?? "creativa" } });
-  const id = (await r.json()).project.id as string;
+  await page.goto(`${env.base}/forja/studio/#/projects`);
+  await page.waitForSelector(".pj-empty, .pj-grid");
+  const id = await api<string>(page, "async (Api,a)=>(await Api.createProject(a)).project.id", { name: "Proyecto e2e", siteName: "Sitio e2e", templateId: opts.tpl ?? "creativa" });
   await page.goto(`${env.base}/forja/studio/#/edit/${id}`);
   await page.waitForSelector(".cv-frame", { timeout: 20000 });
   await page.waitForTimeout(600);

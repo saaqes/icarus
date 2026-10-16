@@ -43,7 +43,7 @@ export function isSafeAssetSrc(src: unknown): src is string {
   if (typeof src !== "string") return false;
   if (src === "") return true;
   if (src.length > 2000 || /[\s"'()<>\\\u0000-\u001F]/.test(src)) return false;
-  if (/^\/api\/assets\/[a-z0-9_-]{6,60}$/i.test(src)) return true;
+  if (/^\/local\/[a-z0-9_-]{6,60}$/i.test(src)) return true;
   if (STATIC_IMAGE_PREFIXES.some((p) => src.startsWith(p) && !src.includes(".."))) return true;
   return /^https:\/\/[^/]+\/.*$|^https:\/\/[^/]+$/i.test(src);
 }

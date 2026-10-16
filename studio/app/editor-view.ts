@@ -6,6 +6,7 @@ import { Editor, LeftTab, EditorState } from "../core/editor";
 import { Persistence } from "../core/persistence";
 import { session } from "../core/session";
 import { Api, ApiError, PROJECT_STATUS_LABEL } from "../lib/api";
+import { downloadBlob, safeName, zipBlob } from "../lib/download";
 import { confirmDialog, debounce, formatDateTime, h, ic, menu, modal, timeAgo, toast } from "../lib/dom";
 import { InsertPanel } from "../ui/insert";
 import { LayersPanel } from "../ui/layers";
@@ -108,7 +109,7 @@ export function mountEditor(host: HTMLElement, opts: EditorViewOptions): () => v
 
   const exportMenu = (anchor: HTMLElement) => menu(anchor, [
     { label: "Descargar sitio (.zip)", icon: "download", onClick: () => void downloadZip() },
-    { label: "Exportar proyecto (.json)", icon: "file", onClick: () => exportJson() },
+    { label: "Exportar proyecto (.icarus.json)", icon: "file", onClick: () => void exportJson() },
     { separator: true, label: "" },
     { label: "Historial de versiones", icon: "history", onClick: () => void showVersions() },
     { label: "Atajos de teclado", icon: "keyboard", shortcut: "?", onClick: () => showShortcuts() },
@@ -120,21 +121,19 @@ export function mountEditor(host: HTMLElement, opts: EditorViewOptions): () => v
     toast("Preparando el sitio…", "info", 1500);
     if (!(await persistence.flush()) && persistence.isDirty) { toast("No se pudo guardar el proyecto; inténtalo de nuevo.", "error"); return; }
     try {
-      const { export: ex } = await Api.exportZip(meta.id);
-      const a = h("a", { href: ex.downloadUrl, download: ex.filename });
-      document.body.appendChild(a); a.click(); a.remove();
-      toast(`Descargando ${ex.filename} (${(ex.size / 1024).toFixed(0)} KB, ${ex.files} archivos)`, "ok", 3500);
-      if (ex.warnings.length) await modal({ title: "El sitio se generó con avisos", body: h("ul", { class: "st-list" }, ex.warnings.map((w) => h("li", null, w))) });
+      const r = await Api.buildZip(meta.id, ed.doc);
+      downloadBlob(zipBlob(r.zip), r.filename);
+      toast(`Descargando ${r.filename} (${(r.zip.length / 1024).toFixed(0)} KB, ${r.files.length} archivos)`, "ok", 3500);
+      if (r.warnings.length) await modal({ title: "El sitio se generó con avisos", body: h("ul", { class: "st-list" }, r.warnings.map((w) => h("li", null, w))) });
     } catch (e) { toast((e as Error).message, "error", 5000); }
   }
 
-  function exportJson(): void {
-    const payload = { format: "icarus-studio-project", version: 1, exportedAt: new Date().toISOString(), meta: { name: meta.name, siteName: meta.siteName, description: meta.description, pageType: meta.pageType, category: meta.category }, doc: ed.doc };
-    const url = URL.createObjectURL(new Blob([JSON.stringify(payload, null, 1)], { type: "application/json" }));
-    const a = h("a", { href: url, download: `${meta.name.replace(/[^\w-]+/g, "-").toLowerCase() || "proyecto"}.icarus.json` });
-    document.body.appendChild(a); a.click(); a.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 2000);
-    toast("Proyecto exportado", "ok", 1500);
+  async function exportJson(): Promise<void> {
+    try {
+      const file = await Api.exportProjectFile(meta.id, ed.doc);
+      downloadBlob(new Blob([JSON.stringify(file)], { type: "application/json" }), `${safeName(meta.name)}.icarus.json`);
+      toast("Proyecto exportado. Impórtalo en «Mis proyectos» desde otro dispositivo.", "ok", 3500);
+    } catch (e) { toast((e as Error).message, "error", 5000); }
   }
 
   async function showVersions(): Promise<void> {
@@ -153,7 +152,7 @@ export function mountEditor(host: HTMLElement, opts: EditorViewOptions): () => v
   async function resolveConflict(): Promise<void> {
     const r = await modal({
       title: "El proyecto cambió en otro lugar", body: "Se guardó una versión más reciente desde otra pestaña o dispositivo. Elige qué hacer con tus cambios de esta pestaña.",
-      actions: [{ label: "Cancelar", kind: "ghost", value: "" }, { label: "Cargar la versión del servidor", kind: "ghost", value: "reload" }, { label: "Sobrescribir con mi versión", kind: "danger", value: "force" }],
+      actions: [{ label: "Cancelar", kind: "ghost", value: "" }, { label: "Cargar la versión guardada", kind: "ghost", value: "reload" }, { label: "Sobrescribir con mi versión", kind: "danger", value: "force" }],
     });
     if (r === "reload") { location.reload(); }
     else if (r === "force") {
