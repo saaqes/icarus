@@ -31,24 +31,42 @@ if (toolsBox) {
   (window as any).ICARUS?.reveal?.(toolsBox);
 }
 
-/* ---------- Vídeo de presentación ---------- */
+/* ---------- Vídeo de presentación (fondo de la sección, en bucle, con botón de pausa) ---------- */
 const wrap = document.getElementById("bld-video");
 const video = document.getElementById("bld-tour") as HTMLVideoElement | null;
-if (wrap && video) {
-  const play = wrap.querySelector<HTMLButtonElement>(".bld-play");
+const toggle = document.getElementById("bld-toggle") as HTMLButtonElement | null;
+if (wrap && video && toggle) {
   const fallback = wrap.querySelector<HTMLElement>(".bld-video__fallback");
-  const showFallback = () => { if (fallback) fallback.hidden = false; play?.setAttribute("hidden", ""); video.removeAttribute("controls"); };
-  play?.addEventListener("click", () => {
-    video.preload = "auto";
-    video.play().then(() => wrap.classList.add("is-playing")).catch(() => { /* el navegador pidió interacción: los controles nativos siguen disponibles */ wrap.classList.add("is-playing"); });
+  const txt = toggle.querySelector(".bld-toggle__txt");
+  let userPaused = false;
+  const reflect = () => {
+    const paused = video.paused;
+    toggle.setAttribute("aria-pressed", String(paused));
+    toggle.setAttribute("aria-label", paused ? "Reproducir el vídeo de presentación" : "Pausar el vídeo de presentación");
+    if (txt) txt.textContent = paused ? "Reproducir" : "Pausar";
+  };
+  const showFallback = () => { if (fallback) fallback.hidden = false; toggle.hidden = true; video.hidden = true; };
+  toggle.addEventListener("click", () => {
+    if (video.paused) { userPaused = false; void video.play().catch(() => undefined); }
+    else { userPaused = true; video.pause(); }
   });
-  video.addEventListener("play", () => wrap.classList.add("is-playing"));
-  video.addEventListener("ended", () => wrap.classList.remove("is-playing"));
+  video.addEventListener("play", reflect);
+  video.addEventListener("pause", reflect);
+  // quien prefiere menos movimiento ve el vídeo detenido (puede reproducirlo con el botón)
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) { userPaused = true; video.pause(); video.removeAttribute("autoplay"); }
+  // ahorra batería: se detiene al salir de la vista y se reanuda al volver (salvo que la persona lo haya pausado)
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver(([e]) => {
+      if (userPaused) return;
+      if (e.isIntersecting) void video.play().catch(() => undefined); else video.pause();
+    }, { threshold: 0.05 }).observe(wrap);
+  }
   // si el archivo no existe o el formato no es compatible, se muestra una alternativa visual
   const sources = video.querySelectorAll("source");
   sources[sources.length - 1]?.addEventListener("error", showFallback);
   video.addEventListener("error", showFallback);
   if (video.canPlayType("video/webm") === "" && video.canPlayType("video/mp4") === "") showFallback();
+  reflect();
 }
 
 /* ---------- Galería de plantillas (módulo diferido) ---------- */

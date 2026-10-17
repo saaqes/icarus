@@ -88,7 +88,22 @@
 
     <!-- ================= ICARUS WEBSITE BUILDER ================= -->
     <section class="bld" id="constructor" aria-labelledby="bld-title">
-      <div class="bld__bg" aria-hidden="true"><div class="bld__glow"></div></div>
+      <div class="bld-video" id="bld-video">
+        <video id="bld-tour" autoplay muted loop playsinline preload="auto" width="1280" height="720" poster="studio/assets/media/tour-poster.jpg" aria-label="Vídeo de presentación: grabación real del editor eligiendo una plantilla, editando textos, cambiando colores, animando y previsualizando">
+          <source src="studio/assets/media/tour.webm" type="video/webm">
+          <source src="studio/assets/media/tour.mp4" type="video/mp4">
+        </video>
+        <div class="bld-video__shade" aria-hidden="true"></div>
+        <div class="bld-video__fallback" hidden>
+          <p>El vídeo no está disponible en este momento.</p>
+          <a class="btn btn--blood btn--sm" href="studio/#/new">Probar el constructor</a>
+        </div>
+        <button class="bld-toggle" id="bld-toggle" type="button" aria-pressed="false" aria-label="Pausar el vídeo de presentación">
+          <svg class="i-pause" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4.2" height="14" rx="1"/><rect x="13.8" y="5" width="4.2" height="14" rx="1"/></svg>
+          <svg class="i-play" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+          <span class="bld-toggle__txt">Pausar</span>
+        </button>
+      </div>
       <div class="wrap bld__grid">
         <div class="bld__copy">
           <span class="eyebrow fade-up" style="--d:.2s"><span class="rune">ᚠ</span>ICARUS Website Builder</span>
@@ -106,22 +121,6 @@
           </ul>
         </div>
 
-        <figure class="bld-video" id="bld-video">
-          <div class="bld-video__frame">
-            <video id="bld-tour" controls preload="none" playsinline width="1280" height="720" poster="studio/assets/media/tour-poster.jpg" aria-describedby="bld-tour-desc">
-              <source src="studio/assets/media/tour.webm" type="video/webm">
-              <source src="studio/assets/media/tour.mp4" type="video/mp4">
-              <track kind="subtitles" srclang="es" label="Español" src="studio/assets/media/tour.vtt" default>
-              Tu navegador no puede reproducir este vídeo. Puedes probar el constructor directamente en <a href="studio/#/new">ICARUS Studio</a>.
-            </video>
-            <button class="bld-play" type="button" aria-label="Reproducir el vídeo de presentación"><svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg><span>Ver el constructor en acción</span></button>
-            <div class="bld-video__fallback" hidden>
-              <p>El vídeo no está disponible en este momento.</p>
-              <a class="btn btn--blood btn--sm" href="studio/#/new">Probar el constructor</a>
-            </div>
-          </div>
-          <figcaption id="bld-tour-desc">Grabación real del editor: elegir una plantilla, editar textos, mover elementos, cambiar tipografías y colores, animar, ver el móvil y previsualizar.</figcaption>
-        </figure>
       </div>
     </section>
 

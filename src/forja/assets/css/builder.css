@@ -2,10 +2,9 @@
    ICARUS Website Builder — sección de presentación en /forja/
    Reutiliza los tokens de icarus.css (negro, plata y carmesí).
    ========================================================= */
-.bld { position: relative; padding: calc(var(--header-h) + clamp(28px, 6vw, 80px)) 0 clamp(60px, 8vw, 110px); overflow: hidden; }
-.bld__bg { position: absolute; inset: 0; z-index: -1; }
-.bld__glow { position: absolute; left: 50%; top: -20%; width: 130vw; height: 90vh; transform: translateX(-50%); background: radial-gradient(ellipse at 50% 40%, rgba(142, 27, 27, .42), rgba(142, 27, 27, .08) 45%, transparent 70%); }
-.bld__grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.12fr); gap: clamp(28px, 5vw, 64px); align-items: center; }
+.bld { position: relative; isolation: isolate; display: flex; align-items: center; min-height: clamp(620px, 100svh, 900px); padding: calc(var(--header-h) + clamp(28px, 5vw, 64px)) 0 clamp(70px, 8vw, 110px); overflow: hidden; background: #060607; }
+.bld__grid { position: relative; z-index: 2; display: block; width: 100%; }
+.bld__copy { max-width: min(640px, 100%); }
 .bld__title { font-size: clamp(32px, 4.3vw, 60px); line-height: 1.04; margin: 22px 0 22px; }
 .bld__sub { margin: 0 0 30px; }
 .bld__actions { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 26px; }
@@ -14,16 +13,28 @@
 .btn--glow { animation: bld-pulse 3.2s ease-in-out infinite; }
 @keyframes bld-pulse { 0%, 100% { box-shadow: 0 0 0 1px rgba(0,0,0,.4) inset, 0 10px 30px -10px rgba(179,38,30,.6); } 50% { box-shadow: 0 0 0 1px rgba(0,0,0,.4) inset, 0 12px 46px -6px rgba(217,71,43,.85); } }
 
-/* Vídeo */
-.bld-video { margin: 0; }
-.bld-video__frame { position: relative; aspect-ratio: 16 / 9; border: 1px solid var(--line-strong); border-radius: 14px; overflow: hidden; background: #000; box-shadow: 0 40px 100px -30px #000, 0 0 0 1px rgba(255,255,255,.03), 0 0 80px -30px rgba(179,38,30,.5); }
-.bld-video video { width: 100%; height: 100%; display: block; object-fit: cover; background: #000; }
-.bld-play { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 12px; border: 0; background: linear-gradient(180deg, rgba(6,6,7,.12), rgba(6,6,7,.62)); color: #fff; cursor: pointer; transition: opacity .35s var(--ease), background .35s; font-family: var(--font-display); font-size: 12px; letter-spacing: .22em; text-transform: uppercase; }
-.bld-play svg { width: 74px; height: 74px; padding: 22px 18px 22px 26px; border-radius: 50%; background: linear-gradient(180deg, #b5281f, #7a1414); border: 1px solid #c2332a; box-shadow: 0 0 0 10px rgba(179,38,30,.22), 0 16px 40px -8px rgba(217,71,43,.7); transition: transform .35s var(--ease); }
-.bld-play:hover svg { transform: scale(1.08); }
-.bld-video.is-playing .bld-play { opacity: 0; pointer-events: none; }
+/* Vídeo de fondo: ocupa toda la sección, con los textos encima */
+.bld-video { position: absolute; inset: 0; z-index: -1; margin: 0; background: #000; }
+.bld-video video { position: absolute; inset: 0; width: 100%; height: 100%; display: block; object-fit: cover; object-position: 60% 50%; background: #000; transform: scale(1.1); transform-origin: 0 0; /* recorta los bordes de la grabación */ }
+.bld-video__shade { position: absolute; inset: 0; pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(6,6,7,.94) 0%, rgba(6,6,7,.82) 34%, rgba(6,6,7,.38) 62%, rgba(6,6,7,.12) 100%),
+    linear-gradient(180deg, rgba(6,6,7,.72) 0%, rgba(6,6,7,0) 22%, rgba(6,6,7,0) 70%, rgba(6,6,7,.85) 100%); }
 .bld-video__fallback { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 12px; padding: 20px; text-align: center; background: radial-gradient(ellipse at 50% 30%, rgba(142,27,27,.35), #060607 70%); }
-.bld-video figcaption { margin-top: 12px; font-size: 13.5px; color: var(--silver-500); line-height: 1.5; }
+.bld-video__fallback[hidden] { display: none !important; }
+
+/* Botón blanco de pausa / reproducción (parte derecha, abajo) */
+.bld-toggle { position: absolute; right: clamp(16px, 4vw, 48px); bottom: 118px; z-index: 3; display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 20px 0 16px; border: 0; border-radius: 999px; background: #fff; color: #0b0b0d; font-family: var(--font-body); font-weight: 700; font-size: 14px; letter-spacing: .02em; cursor: pointer; box-shadow: 0 10px 34px -8px rgba(0,0,0,.7), 0 0 0 1px rgba(255,255,255,.4); transition: transform .25s var(--ease), box-shadow .25s, background .25s; }
+.bld-toggle:hover { transform: translateY(-2px); background: #f2f2f4; box-shadow: 0 16px 40px -8px rgba(0,0,0,.75), 0 0 0 1px #fff; }
+.bld-toggle:focus-visible { outline: 3px solid var(--blood-bright, #d9472b); outline-offset: 3px; }
+.bld-toggle .i-play { display: none; }
+.bld-toggle[aria-pressed="true"] .i-play { display: block; }
+.bld-toggle[aria-pressed="true"] .i-pause { display: none; }
+@media (max-width: 640px) { .bld-toggle { padding: 0; width: 46px; justify-content: center; } .bld-toggle__txt { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; } }
+@media (max-width: 860px) {
+  .bld-video__shade { background: linear-gradient(180deg, rgba(6,6,7,.78) 0%, rgba(6,6,7,.72) 45%, rgba(6,6,7,.9) 100%); }
+  .bld-video video { object-position: 70% 50%; }
+}
 
 /* Galería */
 .bld-filters { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 34px 0 30px; }
@@ -103,7 +114,6 @@ body.has-bld-pv { overflow: hidden; }
 @media (max-width: 960px) { .bld__grid { grid-template-columns: 1fr; } .bld__actions .btn { flex: 1 1 220px; } }
 @media (prefers-reduced-motion: reduce) { .btn--glow, .bld-viz i, .bld-viz .aa { animation: none !important; } .viz-anim i { opacity: 1; } .bld-card, .bld-card:hover { transition: none; transform: none; } }
 
-.bld-play[hidden], .bld-video__fallback[hidden] { display: none !important; }
 .bld-link { align-self: center; font-family: var(--font-display); font-size: 12px; letter-spacing: .18em; text-transform: uppercase; color: var(--silver-300); padding: 10px 6px; transition: color .3s; }
 .bld-link:hover { color: #fff; }
 /* la cabecera de /forja/ tiene más enlaces: se compacta para que quepan en una línea */
